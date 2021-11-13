@@ -22,5 +22,8 @@
   "bugs": {
     "url": "https://github.com/kobalab/majiang-ai/issues"
   },
-  "homepage": "https://github.com/kobalab/majiang-ai#readme"
+  "homepage": "https://github.com/kobalab/majiang-ai#readme",
+  "dependencies": {
+    "@kobalab/majiang-core": "^0.0.5"
+  }
 }
