@@ -1,9 +1,6 @@
-/*!
- *  @kobalab/majiang-ai v0.0.1
- *
- *  Copyright(C) 2021 Satoshi Kobayashi
- *  Released under the MIT license
- *  https://github.com/kobalab/majiang-ai/blob/master/LICENSE
+/*
+ *  思考ルーチン 0000
+ *      - 空応答を返すのみ
  */
 "use strict";
 
