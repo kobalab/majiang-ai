@@ -5,7 +5,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "main": "index.js",
+  "main": "lib/player.js",
   "scripts": {
     "test": "mocha -u tdd",
     "test:cover": "nyc -r lcov -r text npm test"

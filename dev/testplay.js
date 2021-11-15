@@ -11,7 +11,7 @@ const Game    = require('./game');
 
 function select_player(n = '') {
     return new (n.match(/^\d{4}$/) ? require(`../legacy/player-${n}`)
-                                   : require('../lib/player'))();
+                                   : require('../'))();
 }
 
 function get_shan(filename) {
