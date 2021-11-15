@@ -9,7 +9,7 @@ const Shan    = require('./shan');
 module.exports = class Game extends Majiang.Game {
 
     do_sync(script) {
-        this._model.qijia = script.qijia;
+        this._qijia = script.qijia;
         this._shan = [];
         for (let i = 0; i < script.shan.length; i++) {
             let j = i % 4;
@@ -17,6 +17,9 @@ module.exports = class Game extends Majiang.Game {
             this._shan[j].push(script.shan[i]);
         }
         super.do_sync();
+    }
+    kaiju() {
+        super.kaiju(this._qijia);
     }
     qipai() {
         let pai;
