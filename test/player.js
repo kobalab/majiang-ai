@@ -85,6 +85,11 @@ suite('Player', ()=>{
             player.action({zimo:{l:0,p:'z1'}}, reply);
             assert.ok(_reply);
         });
+        test('他者の手番では空応答を返すこと', ()=>{
+            const player = init_player();
+            player.action({zimo:{l:1,p:''}}, reply);
+            assert.deepEqual(_reply, {});
+        });
         test('槓自摸の場合',()=>{
             const player = init_player({shoupai:'m123p456s789z2,z1111'});
             player.action({gangzimo:{l:0,p:'z3'}},reply);
@@ -102,9 +107,15 @@ suite('Player', ()=>{
         });
         test('応答を返すこと', ()=>{
             const player = init_player();
+            player.action({zimo:{l:1,p:'z1'}});
+            player.action({dapai:{l:1,p:'z1_'}}, reply);
+            assert.ok(_reply);
+        });
+        test('自身の手番では空応答を返すこと', ()=>{
+            const player = init_player();
             player.action({zimo:{l:0,p:'z1'}});
             player.action({dapai:{l:0,p:'z1_'}}, reply);
-            assert.ok(_reply);
+            assert.deepEqual(_reply, {});
         });
     });
     suite('fulou(fulou)', ()=>{
@@ -120,6 +131,12 @@ suite('Player', ()=>{
             player.action({fulou:{l:0,m:'z111+'}}, reply);
             assert.ok(_reply);
         });
+        test('他者の手番では空応答を返すこと', ()=>{
+            const player = init_player();
+            player.action({dapai:{l:2,p:'z1_'}});
+            player.action({fulou:{l:1,m:'z111+'}}, reply);
+            assert.deepEqual(_reply, {});
+        });
     });
     suite('gang(gang)', ()=>{
         test('卓情報を設定すること', ()=>{
@@ -130,9 +147,15 @@ suite('Player', ()=>{
         });
         test('応答を返すこと', ()=>{
             const player = init_player({shoupai:'m123p456s789z1112'});
+            player.action({zimo:{l:1,p:'z3'}});
+            player.action({gang:{l:1,m:'z3333'}}, reply);
+            assert.ok(_reply);
+        });
+        test('自身の手番では空応答を返すこと', ()=>{
+            const player = init_player({shoupai:'m123p456s789z1112'});
             player.action({zimo:{l:0,p:'z1'}});
             player.action({gang:{l:0,m:'z1111'}}, reply);
-            assert.ok(_reply);
+            assert.deepEqual(_reply, {});
         });
     });
     suite('kaigang(kaigang)', ()=>{

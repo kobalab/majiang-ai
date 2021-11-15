@@ -21,6 +21,7 @@ module.exports = class Player extends Majiang.Player {
     zimo(zimo, gangzimo) {
         super.zimo(zimo, gangzimo);
         if (! this._callback) return;
+        if (zimo.l != this._menfeng) return this._callback();
         let mianzi;
         if      (this.select_hule(gangzimo))  this._callback({hule: '-'});
         else if (this.select_pingju())        this._callback({pingju: '-'});
@@ -31,6 +32,7 @@ module.exports = class Player extends Majiang.Player {
     dapai(dapai) {
         super.dapai(dapai);
         if (! this._callback) return;
+        if (dapai.l == this._menfeng) return this._callback();
         let mianzi;
         if      (this.select_hule(dapai.p))    this._callback({hule: '-'});
         else if (mianzi = this.select_fulou()) this._callback({fulou: mianzi});
@@ -40,14 +42,16 @@ module.exports = class Player extends Majiang.Player {
     fulou(fulou) {
         super.fulou(fulou);
         if (! this._callback) return;
+        if (fulou.l != this._menfeng) return this._callback();
         this._callback({dapai: this.select_dapai()});
     }
 
     gang(gang) {
         super.gang(gang);
         if (! this._callback) return;
-        if      (this.select_hule(gang.m))     this._callback({hule: '-'});
-        else                                   this._callback();
+        if (gang.l == this._menfeng) return this._callback();
+        if (this.select_hule(gang.m)) this._callback({hule: '-'});
+        else                          this._callback();
     }
 
     kaigang(kaigang) {
