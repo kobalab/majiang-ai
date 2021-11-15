@@ -1,9 +1,17 @@
-/*!
- *  @kobalab/majiang-ai v0.0.1
- *
- *  Copyright(C) 2021 Satoshi Kobayashi
- *  Released under the MIT license
- *  https://github.com/kobalab/majiang-ai/blob/master/LICENSE
+/*
+ *  思考ルーチン 0001
+ *    - select_hule()
+ *      - 和了可能な場合は必ず和了する
+ *    - select_pingju()
+ *      - 4シャンテン以上で九種九牌なら流局を選択する
+ *    - select_fulou()
+ *      - 鳴かない
+ *    - select_gang()
+ *      - シャンテン数が変わらない槓はする
+ *    - select_dapai()
+ *      - 最も有効牌の種類が多くなる打牌を選択する
+ *    - select_lizhi()
+ *      - リーチ可能な場合は必ずリーチする
  */
 "use strict";
 
