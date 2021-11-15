@@ -25,6 +25,7 @@ const argv = yargs
     .option('times',    { alias: 't', description: '試行回数' } )
     .option('input',    { alias: 'i', description: '入力ファイル(牌山)' } )
     .option('output',   { alias: 'o', description: '出力ファイル(牌譜)' } )
+    .option('skip',     { alias: 's', description: '指定した数の牌山をスキップ' } )
     .argv;
 
 const players = [];
@@ -34,6 +35,8 @@ for (let i = 1; i < 4; i++) {
 }
 
 const script = get_shan(argv.input) || [];
+for (let i = 0; i < (argv.skip || 0); i++) script.shift()
+
 let times = argv.times || script && script.length || 1;
 
 const paipu = [];
