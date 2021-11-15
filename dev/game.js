@@ -31,7 +31,8 @@ module.exports = class Game extends Majiang.Game {
         super.qipai(pai && new Shan(pai));
     }
     zimo() {
-        this._model.shan.lunban(this._model.lunban);
+        if (this._model.shan.lunban)
+                        this._model.shan.lunban(this._model.lunban);
         super.zimo();
     }
 }
