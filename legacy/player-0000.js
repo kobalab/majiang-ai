@@ -8,6 +8,9 @@ const Majiang = require('@kobalab/majiang-core');
 
 module.exports = class Player extends Majiang.Player {
 
+    action_kaiju(kaiju) { this._callback() }
+    action_qipai(qipai) { this._callback() }
+
     action_zimo(zimo, gangzimo) {
         if (zimo.l != this._menfeng) return this._callback();
         let m;
@@ -36,6 +39,11 @@ module.exports = class Player extends Majiang.Player {
         if (this.select_hule(gang, true)) this._callback({hule: '-'});
         else                              this._callback();
     }
+
+    action_hule(hule)     { this._callback() }
+    action_pingju(pingju) { this._callback() }
+    action_jieju(jieju)   { this._callback() }
+
 
     select_hule(data, hupai) {}
     select_pingju() {}
