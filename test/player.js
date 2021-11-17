@@ -38,7 +38,7 @@ suite('Player', ()=>{
 
     test('インスタンスが生成できること', ()=> assert.ok(new Player()));
 
-    suite('kaiju(kaiju)', ()=>{
+    suite('action_kaiju(kaiju)', ()=>{
         let kaiju = { kaiju: { id: 0, rule: Majiang.rule(), title: 'タイトル',
                                player: ['私','下家','対面','上家'], qijia: 0 } };
         test('卓情報を設定すること', ()=>{
@@ -53,7 +53,8 @@ suite('Player', ()=>{
             assert.ok(_reply);
         });
     });
-    suite('qipai(qipai)', ()=>{
+
+    suite('action_qipai(qipai)', ()=>{
         let kaiju = { kaiju: { id: 0, rule: Majiang.rule(), title: 'タイトル',
                                player: ['私','下家','対面','上家'], qijia: 0 } };
         let qipai = { qipai: { zhuangfeng: 0, jushu: 0,
@@ -74,7 +75,8 @@ suite('Player', ()=>{
             assert.ok(_reply);
         });
     });
-    suite('zimo(zimo, gangzimo)', ()=>{
+
+    suite('action_zimo(zimo, gangzimo)', ()=>{
         test('卓情報を設定すること', ()=>{
             const player = init_player();
             player.action({zimo:{l:0,p:'z1'}});
@@ -98,7 +100,8 @@ suite('Player', ()=>{
             assert.ok(_reply);
         });
     });
-    suite('dapai(dapai)', ()=>{
+
+    suite('action_dapai(dapai)', ()=>{
         test('卓情報を設定すること', ()=>{
             const player = init_player();
             player.action({zimo:{l:0,p:'z1'}});
@@ -118,7 +121,8 @@ suite('Player', ()=>{
             assert.deepEqual(_reply, {});
         });
     });
-    suite('fulou(fulou)', ()=>{
+
+    suite('action_fulou(fulou)', ()=>{
         test('卓情報を設定すること', ()=>{
             const player = init_player();
             player.action({dapai:{l:1,p:'z1_'}});
@@ -138,7 +142,8 @@ suite('Player', ()=>{
             assert.deepEqual(_reply, {});
         });
     });
-    suite('gang(gang)', ()=>{
+
+    suite('action_gang(gang)', ()=>{
         test('卓情報を設定すること', ()=>{
             const player = init_player({shoupai:'m123p456s789z1112'});
             player.action({zimo:{l:0,p:'z1'}});
@@ -158,19 +163,8 @@ suite('Player', ()=>{
             assert.deepEqual(_reply, {});
         });
     });
-    suite('kaigang(kaigang)', ()=>{
-        test('卓情報を設定すること', ()=>{
-            const player = init_player();
-            player.action({kaigang:{baopai:'s1'}});
-            assert.equal(player.shan.baopai.pop(), 's1');
-        });
-        test('応答を返さないこと', ()=>{
-            const player = init_player();
-            player.action({kaigang:{baopai:'s1'}});
-            assert.ok(! _reply);
-        });
-    });
-    suite('hule(hule)', ()=>{
+
+    suite('action_hule(hule)', ()=>{
         test('卓情報を設定すること', ()=>{
             const player = init_player();
             player.action({hule:{fubaopai:['s1']}});
@@ -182,7 +176,8 @@ suite('Player', ()=>{
             assert.ok(_reply);
         });
     });
-    suite('pingju(pingju)', ()=>{
+
+    suite('action_pingju(pingju)', ()=>{
         test('卓情報を設定すること', ()=>{
             const player = init_player();
             player.action({dapai:{l:1,p:'m1*'}});
@@ -195,7 +190,8 @@ suite('Player', ()=>{
             assert.ok(_reply);
         });
     });
-    suite('jieju(jieju)', ()=>{
+
+    suite('action_jieju(jieju)', ()=>{
         test('卓情報を設定すること', ()=>{
             const player = init_player();
             player.action({jieju:{}});
