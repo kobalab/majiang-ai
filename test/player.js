@@ -99,6 +99,32 @@ suite('Player', ()=>{
             assert.equal(player._n_gang, 1);
             assert.ok(_reply);
         });
+
+        test('和了する', ()=>{
+            const player = init_player({shoupai:'m123p456s789z1122'});
+            player.action({zimo:{l:0,p:'z2'}}, reply);
+            assert.deepEqual(_reply, {hule:'-'});
+        });
+        test('和了する(槓自摸)', ()=>{
+            const player = init_player({shoupai:'m123p456s789z1,z222=2'});
+            player.action({gangzimo:{l:0,p:'z1'}}, reply);
+            assert.deepEqual(_reply, {hule:'-'});
+        });
+        test('九種九牌を選択する', ()=>{
+            const player = init_player({shoupai:'m19p234s56z123456'});
+            player.action({zimo:{l:0,p:'z7'}}, reply);
+            assert.deepEqual(_reply, {daopai:'-'});
+        });
+        test('カンする', ()=>{
+            const player = init_player({shoupai:'m123p456s789z1222'});
+            player.action({zimo:{l:0,p:'z2'}}, reply);
+            assert.deepEqual(_reply, {gang:'z2222'});
+        })
+        test('打牌する', ()=>{
+            const player = init_player({shoupai:'m26789p24s2449z57'});
+            player.action({zimo:{l:0,p:'m4'}}, reply);
+            assert.deepEqual(_reply, {dapai:'z7'});
+        })
     });
 
     suite('action_dapai(dapai)', ()=>{
@@ -120,6 +146,13 @@ suite('Player', ()=>{
             player.action({dapai:{l:0,p:'z1_'}}, reply);
             assert.deepEqual(_reply, {});
         });
+
+        test('和了する', ()=>{
+            const player = init_player({shoupai:'m123p456s789z1122'});
+            player.action({dapai:{l:1,p:'z1'}}, reply);
+            assert.deepEqual(_reply, {hule:'-'});
+        });
+        test('副露する');
     });
 
     suite('action_fulou(fulou)', ()=>{
@@ -141,6 +174,13 @@ suite('Player', ()=>{
             player.action({fulou:{l:1,m:'z111+'}}, reply);
             assert.deepEqual(_reply, {});
         });
+
+        test('打牌する', ()=>{
+            const player = init_player({shoupai:'m123p456s789z1123'});
+            player.action({dapai:{l:1,p:'z1'}});
+            player.action({fulou:{l:0,m:'z111+'}}, reply);
+            assert.deepEqual(_reply, {dapai:'z3'});
+        });
     });
 
     suite('action_gang(gang)', ()=>{
@@ -161,6 +201,13 @@ suite('Player', ()=>{
             player.action({zimo:{l:0,p:'z1'}});
             player.action({gang:{l:0,m:'z1111'}}, reply);
             assert.deepEqual(_reply, {});
+        });
+
+        test('和了する', ()=>{
+            const player = init_player({shoupai:'m13p456s789z11,z222='});
+            player._model.shoupai[1].fulou('m222-');
+            player.action({gang:{l:1,m:'m222-2'}}, reply);
+            assert.deepEqual(_reply, {hule:'-'});
         });
     });
 
@@ -201,6 +248,73 @@ suite('Player', ()=>{
             const player = init_player();
             player.action({jieju:{}}, reply);
             assert.ok(_reply);
+        });
+    });
+
+    suite('select_hule(data, hupai)', ()=>{
+        test('和了できるときは必ず和了する(ツモ)', ()=>{
+            const player = init_player({shoupai:'m123p456s789z11222'});
+            assert.ok(player.select_hule());
+        });
+        test('和了できるときは必ず和了する(嶺上開花)', ()=>{
+            const player = init_player({shoupai:'m123p456s789z11,z222=2'});
+            assert.ok(player.select_hule(null, true));
+        });
+        test('和了できるときは必ず和了する(ロン)', ()=>{
+            const player = init_player({shoupai:'m123p456s789z1122'});
+            assert.ok(player.select_hule({l:1,p:'z1'}));
+        });
+        test('和了できるときは必ず和了する(槍槓)', ()=>{
+            const player = init_player({shoupai:'m13p456s789z11,z222='});
+            assert.ok(player.select_hule({l:1,m:'m222=2'}, true));
+        });
+        test('暗槓は槍槓できない)', ()=>{
+            const player = init_player({shoupai:'m13p456s789z11,z222='});
+            assert.ok(! player.select_hule({l:1,m:'m2222'}, true));
+        });
+    });
+
+    suite('select_pingju()', ()=>{
+        test('九種九牌は流す', ()=>{
+            const player = init_player({shoupai:'m19p234s56z1234567'});
+            assert.ok(player.select_pingju());
+        });
+        test('九種十牌は流さない', ()=>{
+            const player = init_player({shoupai:'m19p134s56z1234567'});
+            assert.ok(! player.select_pingju());
+        });
+    });
+
+    suite('select_fulou(dapai)', ()=>{
+        test('副露しない', ()=>{
+            const player = init_player({shoupai:'m11233z55566677'});
+            assert.ok(! player.select_fulou({l:1,p:'z7'}));
+        });
+    });
+
+    suite('select_gang()', ()=>{
+        test('シャンテン数が変わらなければカンする', ()=>{
+            const player = init_player({shoupai:'m123p456s789z12222'});
+            assert.equal(player.select_gang(), 'z2222');
+        });
+        test('シャンテン戻しとなるカンはしない', ()=>{
+            const player = init_player({shoupai:'m122223p456s789z12'});
+            assert.ok(! player.select_gang());
+        });
+    });
+
+    suite('select_dapai()', ()=>{
+        test('待ちの種類が一番多くなる一番右の牌を選択する', ()=>{
+            const player = init_player({shoupai:'m26789p24s2449z57m4',
+                                        baopai:'z5'});
+            assert.equal(player.select_dapai(), 'z7');
+        });
+    });
+
+    suite('select_lizhi(p)', ()=>{
+        test('リーチできるときは必ずリーチする', ()=>{
+            const player = init_player({shoupai:'m123p456s789z12233'});
+            assert.ok(player.select_lizhi('z1'));
         });
     });
 });
