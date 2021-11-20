@@ -60,6 +60,7 @@ module.exports = class Player extends Majiang.Player {
 
         if (! data) return this.allow_hule(this.shoupai, null, hupai);
 
+        if (data.m && data.m.match(/^[mpsz]\d{4}$/)) return false;
         let d = ['','+','=','-'][(4 + this._model.lunban - this._menfeng) % 4];
         let p = data.m ? data.m[0] + data.m.substr(-1) + d
                        : data.p.substr(0,2) + d;
