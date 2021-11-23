@@ -153,6 +153,12 @@ suite('Player', ()=>{
             assert.deepEqual(_reply, {hule:'-'});
         });
         test('副露する');
+        test('テンパイ宣言する', ()=>{
+            const player = init_player({shoupai:'m123p456s789z1122'});
+            while (player.shan.paishu) player.shan.zimo();
+            player.action({dapai:{l:1,p:'z3'}}, reply);
+            assert.deepEqual(_reply, {daopai:'-'});
+        })
     });
 
     suite('action_fulou(fulou)', ()=>{
@@ -316,5 +322,13 @@ suite('Player', ()=>{
             const player = init_player({shoupai:'m123p456s789z12233'});
             assert.ok(player.select_lizhi('z1'));
         });
+    });
+
+    suite('select_daopai()', ()=>{
+        test('流局時にテンパイなら必ずテンパイ宣言する', ()=>{
+            const player = init_player({shoupai:'m123p456s789z1122'});
+            while (player.shan.paishu) player.shan.zimo();
+            assert.ok(player.select_daopai());
+        })
     });
 });

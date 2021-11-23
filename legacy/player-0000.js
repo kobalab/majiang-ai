@@ -26,6 +26,7 @@ module.exports = class Player extends Majiang.Player {
         let m;
         if      (this.select_hule(dapai)) this._callback({hule: '-'});
         else if (m = this.select_fulou()) this._callback({fulou: m});
+        else if (this.select_daopai())    this._callback({daopai: '-'});
         else                              this._callback();
     }
 
@@ -51,4 +52,5 @@ module.exports = class Player extends Majiang.Player {
     select_gang() {}
     select_dapai() {}
     select_lizhi(p) {}
+    select_daopai() {}
 }
