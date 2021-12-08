@@ -40,17 +40,19 @@ for (let i = 0; i < (argv.skip || 0); i++) script.shift()
 let times = argv.times || script && script.length || 1;
 
 const paipu = [];
+const callback = (log)=>{
+    paipu.push(log);
+    if (argv.output) {
+        fs.writeFileSync(argv.output, JSON.stringify(paipu), 'utf-8');
+    }
+};
 console.log(`[${times}]`,new Date().toLocaleTimeString());
 
 while (times) {
     let s = script.shift();
-    const game = s ? new Game(players)
-                   : new Majiang.Game(players);
+    const game = s ? new Game(players, callback)
+                   : new Majiang.Game(players, callback);
     game.do_sync(s);
     console.log(`[${--times}]`, new Date().toLocaleTimeString(),
                 game._paipu.rank[0], game._paipu.point[0]);
-    paipu.push(game._paipu);
-    if (argv.output) {
-        fs.writeFileSync(argv.output, JSON.stringify(paipu), 'utf-8');
-    }
 }
