@@ -8,6 +8,7 @@ const zlib = require('zlib');
 
 const Majiang = require('@kobalab/majiang-core');
 const Game    = require('./game');
+const rule    = Majiang.rule({'ノーテン宣言あり':true});
 
 function select_player(n = '') {
     return new (n.match(/^\d{4}$/) ? require(`../legacy/player-${n}`)
@@ -50,8 +51,8 @@ console.log(`[${times}]`,new Date().toLocaleTimeString());
 
 while (times) {
     let s = script.shift();
-    const game = s ? new Game(players, callback)
-                   : new Majiang.Game(players, callback);
+    const game = s ? new Game(players, callback, rule)
+                   : new Majiang.Game(players, callback, rule);
     game.do_sync(s);
     console.log(`[${--times}]`, new Date().toLocaleTimeString(),
                 game._paipu.rank[0], game._paipu.point[0]);
