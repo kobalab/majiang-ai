@@ -315,10 +315,14 @@ suite('Player', ()=>{
     });
 
     suite('select_dapai()', ()=>{
-        test('待ちの種類が一番多くなる一番右の牌を選択する', ()=>{
+        test('待ちの枚数が一番多くなる一番右の牌を選択する', ()=>{
             const player = init_player({shoupai:'m26789p24s2449z57m4',
                                         baopai:'z5'});
             assert.equal(player.select_dapai(), 'z7');
+        });
+        test('待ちの論理上の枚数が一番多くなる一番右の牌を選択する', ()=>{
+            const player = init_player({shoupai:'m22279p22445789m8'});
+            assert.equal(player.select_dapai(), 'p4*');
         });
     });
 
