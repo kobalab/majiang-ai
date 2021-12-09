@@ -1,9 +1,7 @@
-/*!
- *  @kobalab/majiang-ai v0.0.2
- *
- *  Copyright(C) 2021 Satoshi Kobayashi
- *  Released under the MIT license
- *  https://github.com/kobalab/majiang-ai/blob/master/LICENSE
+/*
+ *  思考ルーチン 0001
+ *    - select_dapai()
+ *      - 最も有効牌の(論理上の)枚数が多くなる打牌を選択する
  */
 "use strict";
 

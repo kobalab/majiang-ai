@@ -220,12 +220,15 @@ suite('Player', ()=>{
     suite('action_hule(hule)', ()=>{
         test('卓情報を設定すること', ()=>{
             const player = init_player();
-            player.action({hule:{fubaopai:['s1']}});
+            player.action({hule:{l:1, shoupai:'m123p456s789z1122z1',
+                                 fubaopai:['s1']}});
+            assert.equal(player._model.shoupai[1], 'm123p456s789z1122z1')
             assert.equal(player.shan.fubaopai[0], 's1');
         });
         test('応答を返すこと', ()=>{
             const player = init_player();
-            player.action({hule:{fubaopai:['s1']}}, reply);
+            player.action({hule:{l:1, shoupai:'m123p456s789z1122z1',
+                                 fubaopai:['s1']}}, reply);
             assert.ok(_reply);
         });
     });
@@ -234,12 +237,14 @@ suite('Player', ()=>{
         test('卓情報を設定すること', ()=>{
             const player = init_player();
             player.action({dapai:{l:1,p:'m1*'}});
-            player.action({pingju:{name:''}});
+            player.action({pingju:{name:'',
+                                   shoupai:['','m123p456s789z1122','','']}});
+            assert.equal(player._model.shoupai[1], 'm123p456s789z1122')
             assert.equal(player._model.lizhibang, 1);
         });
         test('応答を返すこと', ()=>{
             const player = init_player();
-            player.action({pingju:{name:''}}, reply);
+            player.action({pingju:{name:'',shoupai:['','','','']}}, reply);
             assert.ok(_reply);
         });
     });
@@ -310,10 +315,14 @@ suite('Player', ()=>{
     });
 
     suite('select_dapai()', ()=>{
-        test('待ちの種類が一番多くなる一番右の牌を選択する', ()=>{
+        test('待ちの枚数が一番多くなる一番右の牌を選択する', ()=>{
             const player = init_player({shoupai:'m26789p24s2449z57m4',
                                         baopai:'z5'});
             assert.equal(player.select_dapai(), 'z7');
+        });
+        test('待ちの論理上の枚数が一番多くなる一番右の牌を選択する', ()=>{
+            const player = init_player({shoupai:'m22279p22445789m8'});
+            assert.equal(player.select_dapai(), 'p4*');
         });
     });
 
