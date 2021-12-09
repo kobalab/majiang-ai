@@ -22,11 +22,16 @@ module.exports = class Player extends Majiang.Player {
     }
 
     action_dapai(dapai) {
-        if (dapai.l == this._menfeng) return this._callback();
+        if (dapai.l == this._menfeng)  {
+            if (this.select_daopai()) this._callback({daopai: '-'});
+            else                      this._callback();
+            return;
+        }
         let m;
-        if      (this.select_hule(dapai)) this._callback({hule: '-'});
-        else if (m = this.select_fulou()) this._callback({fulou: m});
-        else                              this._callback();
+        if      (this.select_hule(dapai))      this._callback({hule: '-'});
+        else if (m = this.select_fulou(dapai)) this._callback({fulou: m});
+        else if (this.select_daopai())         this._callback({daopai: '-'});
+        else                                   this._callback();
     }
 
     action_fulou(fulou) {
@@ -51,4 +56,5 @@ module.exports = class Player extends Majiang.Player {
     select_gang() {}
     select_dapai() {}
     select_lizhi(p) {}
+    select_daopai() {}
 }
