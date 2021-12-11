@@ -1,13 +1,29 @@
 /*
- *  思考ルーチン 0002
+ *  思考ルーチン 0004
  *    - select_dapai()
- *      - 最も有効牌の(論理上の)枚数が多くなる打牌を選択する
+ *      - 同点の打牌候補がある場合は「牌の評価値」の大きい方を残すよう選択する
  */
 "use strict";
 
 const Majiang = require('@kobalab/majiang-core');
+const SuanPai = require('./suanpai-0004');
 
 module.exports = class Player extends Majiang.Player {
+
+    qipai(qipai) {
+        this._suanpai = new SuanPai(this._rule['赤牌']);
+        this._suanpai.qipai(
+            qipai, (this._id + 4 - this._model.qijia + 4 - qipai.jushu) % 4);
+        super.qipai(qipai);
+    }
+    zimo(zimo, gangzimo) { this._suanpai.zimo(zimo);
+                           super.zimo(zimo, gangzimo) }
+    dapai(dapai) { this._suanpai.dapai(dapai); super.dapai(dapai) }
+    fulou(fulou) { this._suanpai.fulou(fulou); super.fulou(fulou) }
+    gang(gang)   { this._suanpai.gang(gang);   super.gang(gang)   }
+    kaigang(kaigang) { this._suanpai.kaigang(kaigang);
+                       super.kaigang(kaigang) }
+
 
     action_kaiju(kaiju) { this._callback() }
     action_qipai(qipai) { this._callback() }
@@ -86,9 +102,9 @@ module.exports = class Player extends Majiang.Player {
             let shoupai = this.shoupai.clone().dapai(p);
             if (Majiang.Util.xiangting(shoupai) > n_xiangting) continue;
 
-            let x = 0;
+            let x = 1 - this._suanpai.paijia(p) / 100;
             for (let tp of Majiang.Util.tingpai(shoupai)) {
-                x += 4 - shoupai._bingpai[tp[0]][tp[1]];
+                x += this._suanpai._paishu[tp[0]][tp[1]];
             }
             if (x >= max) {
                 max = x;
