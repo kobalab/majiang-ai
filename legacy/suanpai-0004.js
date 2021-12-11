@@ -1,5 +1,7 @@
 /*
- *  SuanPai
+ *  SuanPai 0004
+ *    - paijia()
+ *      - 搭子のできやすさから「牌の評価値」を求める
  */
 "use strict";
 

@@ -1,14 +1,12 @@
-/*!
- *  @kobalab/majiang-ai v0.0.3
- *
- *  Copyright(C) 2021 Satoshi Kobayashi
- *  Released under the MIT license
- *  https://github.com/kobalab/majiang-ai/blob/master/LICENSE
+/*
+ *  思考ルーチン 0004
+ *    - select_dapai()
+ *      - 同点の打牌候補がある場合は「牌の評価値」の大きい方を残すよう選択する
  */
 "use strict";
 
 const Majiang = require('@kobalab/majiang-core');
-const SuanPai = require('./suanpai');
+const SuanPai = require('./suanpai-0004');
 
 module.exports = class Player extends Majiang.Player {
 

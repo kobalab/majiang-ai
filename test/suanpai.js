@@ -39,6 +39,7 @@ suite('SuanPai', ()=>{
                         shoupai: ['','','m123p406s789z1122',''] }, 2);
         test('場風が正しいこと', ()=> assert.equal(suanpai._zhuangfeng, 1));
         test('自風が正しいこと', ()=> assert.equal(suanpai._menfeng, 2));
+        test('ドラが正しいこと', ()=> assert.deepEqual(suanpai._baopai, ['m1']));
         test('牌数が正しいこと', ()=>
             assert.deepEqual(suanpai._paishu,
                 { m: [1,2,3,3,4,4,4,4,4,4],
@@ -125,10 +126,48 @@ suite('SuanPai', ()=>{
     });
 
     suite('kaigang(kaigang)', ()=>{
+        test('ドラが追加されること', ()=>{
+            const suanpai = init_suanpai({baopai:'z1'});
+            suanpai.kaigang({ baopai: 's0' });
+            assert.deepEqual(suanpai._baopai, ['z1','s0']);
+        });
         test('牌数が減算されること', ()=>{
             const suanpai = init_suanpai({baopai:'z1'});
             suanpai.kaigang({ baopai: 's0' });
             assert.deepEqual(suanpai._paishu.s, [0,4,4,4,4,3,4,4,4,4]);
+        });
+    });
+
+    suite('paijia(p)', ()=>{
+        function paijia_all(suanpai) {
+            let paijia = {};
+            for (let s of ['m','p','s','z']) {
+                paijia[s] = [];
+                for (let n = 0; n < suanpai._paishu[s].length; n++) {
+                    paijia[s][n] = suanpai.paijia(s+n);
+                }
+            }
+            return paijia;
+        }
+        test('牌価値の初期値が正しいこと', ()=>{
+            const suanpai = new SuanPai({m:0,p:1,s:2});
+            assert.deepEqual(paijia_all(suanpai), {
+                m: [40,12,16,20,20,20,20,20,16,12],
+                p: [42,12,16,21,21,21,21,21,16,12],
+                s: [44,12,16,22,22,22,22,22,16,12],
+                z: [ 0,16, 4, 4, 4, 8, 8, 8]
+            });
+        });
+        test('配牌後の牌価値が正しいこと', function(){
+            const suanpai = init_suanpai({shoupai:'m233p055s778z1123',
+                                          baopai:'z1'});
+            suanpai.kaigang({baopai:'z1'});
+            assert.deepEqual(paijia_all(suanpai), {
+                m: [38, 8, 9,17,17,19,21,21,16,12],
+                p: [34,12,16,17,14,17,14,17,16,12],
+                s: [38,12,16,21,21,19,17,17, 9, 8],
+                z: [ 0, 0,48, 3, 4, 8, 8, 8],
+            });
         });
     });
 });

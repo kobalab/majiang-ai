@@ -398,6 +398,11 @@ suite('Player', ()=>{
                                         baopai:'z5'});
             assert.equal(player.select_dapai(), 'z5');
         });
+        test('同点の打牌候補がある場合は牌価値の低い方を選択する', ()=>{
+            const player = init_player({shoupai:'m188p3346789s113m0',
+                                        baopai:'z2'});
+            assert.equal(player.select_dapai(), 'm1');
+        });
     });
 
     suite('select_lizhi(p)', ()=>{
