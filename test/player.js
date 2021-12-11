@@ -183,7 +183,13 @@ suite('Player', ()=>{
             assert.deepEqual(_reply, {hule:'-'});
         });
         test('副露する');
-        test('テンパイ宣言する', ()=>{
+        test('テンパイ宣言する(自分の手番)', ()=>{
+            const player = init_player({shoupai:'m123p456s789z11223'});
+            while (player.shan.paishu) player.shan.zimo();
+            player.action({dapai:{l:0,p:'z3'}}, reply);
+            assert.deepEqual(_reply, {daopai:'-'});
+        })
+        test('テンパイ宣言する(他者の手番)', ()=>{
             const player = init_player({shoupai:'m123p456s789z1122'});
             while (player.shan.paishu) player.shan.zimo();
             player.action({dapai:{l:1,p:'z3'}}, reply);
