@@ -1,6 +1,6 @@
 # 過去の思考ルーチン
 
-### 0004
+## 0004
 [麻雀の打牌選択ルゴリズム(3)](https://blog.kobalab.net/entry/20160105/1451998413)
   - Player
     - select_dapai()
