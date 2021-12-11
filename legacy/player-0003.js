@@ -8,7 +8,7 @@
 "use strict";
 
 const Majiang = require('@kobalab/majiang-core');
-const SuanPai = require('./suanpai');
+const SuanPai = require('./suanpai-0003');
 
 module.exports = class Player extends Majiang.Player {
 
