@@ -1,0 +1,10 @@
+.nyc_output/
+coverage/
+log/
+shan/
+bin
+test/
+dev/
+legacy/
+setver.sh
+test.sh
