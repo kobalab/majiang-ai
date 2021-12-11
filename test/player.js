@@ -23,6 +23,7 @@ function init_player(param = {}) {
 
     let menfeng = (kaiju.id + 4 - kaiju.qijia + 4 - qipai.jushu) % 4;
     qipai.shoupai[menfeng] = param.shoupai || 'm123p456s789z1123';
+    if (param.baopai) qipai.baopai = param.baopai;
 
     for (let d of msg) {
         player.action(d);
@@ -59,13 +60,23 @@ suite('Player', ()=>{
                                player: ['私','下家','対面','上家'], qijia: 0 } };
         let qipai = { qipai: { zhuangfeng: 0, jushu: 0,
                                changbang: 0, lizhibang: 0,
-                               defen: [25000,25000,25000,25000], baopai: '',
+                               defen: [25000,25000,25000,25000], baopai: 'm1',
                                shoupai: ['m123p456s789z1123','','',''] } };
         test('卓情報を設定すること', ()=>{
             const player = new Player();
             player.action(kaiju);
             player.action(qipai);
             assert.equal(player.shoupai, 'm123p456s789z1123');
+        });
+        test('牌数をカウントすること', ()=>{
+            const player = new Player();
+            player.action(kaiju);
+            player.action(qipai);
+            assert.deepEqual(player._suanpai._paishu,
+                { m: [1,2,3,3,4,4,4,4,4,4],
+                  p: [1,4,4,4,3,3,3,4,4,4],
+                  s: [1,4,4,4,4,4,4,3,3,3],
+                  z: [0,2,3,3,4,4,4,4] });
         });
         test('応答を返すこと', ()=>{
             const player = new Player();
@@ -81,6 +92,15 @@ suite('Player', ()=>{
             const player = init_player();
             player.action({zimo:{l:0,p:'z1'}});
             assert.equal(player.shoupai, 'm123p456s789z1123z1');
+        });
+        test('牌数をカウントすること', ()=>{
+            const player = init_player();
+            player.action({zimo:{l:0,p:'z1'}});
+            assert.deepEqual(player._suanpai._paishu,
+                { m: [1,2,3,3,4,4,4,4,4,4],
+                  p: [1,4,4,4,3,3,3,4,4,4],
+                  s: [1,4,4,4,4,4,4,3,3,3],
+                  z: [0,1,3,3,4,4,4,4] });
         });
         test('応答を返すこと', ()=>{
             const player = init_player();
@@ -134,6 +154,16 @@ suite('Player', ()=>{
             player.action({dapai:{l:0,p:'z1_'}});
             assert.equal(player.shoupai, 'm123p456s789z1123');
         });
+        test('牌数をカウントすること', ()=>{
+            const player = init_player();
+            player.action({zimo:{l:1,p:'z1'}});
+            player.action({dapai:{l:1,p:'z1_'}});
+            assert.deepEqual(player._suanpai._paishu,
+                { m: [1,2,3,3,4,4,4,4,4,4],
+                  p: [1,4,4,4,3,3,3,4,4,4],
+                  s: [1,4,4,4,4,4,4,3,3,3],
+                  z: [0,1,3,3,4,4,4,4] });
+        });
         test('応答を返すこと', ()=>{
             const player = init_player();
             player.action({zimo:{l:1,p:'z1'}});
@@ -153,7 +183,13 @@ suite('Player', ()=>{
             assert.deepEqual(_reply, {hule:'-'});
         });
         test('副露する');
-        test('テンパイ宣言する', ()=>{
+        test('テンパイ宣言する(自分の手番)', ()=>{
+            const player = init_player({shoupai:'m123p456s789z11223'});
+            while (player.shan.paishu) player.shan.zimo();
+            player.action({dapai:{l:0,p:'z3'}}, reply);
+            assert.deepEqual(_reply, {daopai:'-'});
+        })
+        test('テンパイ宣言する(他者の手番)', ()=>{
             const player = init_player({shoupai:'m123p456s789z1122'});
             while (player.shan.paishu) player.shan.zimo();
             player.action({dapai:{l:1,p:'z3'}}, reply);
@@ -168,6 +204,16 @@ suite('Player', ()=>{
             player.action({fulou:{l:0,m:'z111+'}});
             assert.equal(player.shoupai, 'm123p456s789z23,z111+,');
         });
+        test('牌数をカウントすること', ()=>{
+            const player = init_player();
+            player.action({dapai:{l:2,p:'z3_'}});
+            player.action({fulou:{l:1,m:'z333+'}});
+            assert.deepEqual(player._suanpai._paishu,
+                { m: [1,2,3,3,4,4,4,4,4,4],
+                  p: [1,4,4,4,3,3,3,4,4,4],
+                  s: [1,4,4,4,4,4,4,3,3,3],
+                  z: [0,2,3,0,4,4,4,4] });
+        });
         test('応答を返すこと', ()=>{
             const player = init_player();
             player.action({dapai:{l:1,p:'z1_'}});
@@ -176,8 +222,8 @@ suite('Player', ()=>{
         });
         test('他者の手番では空応答を返すこと', ()=>{
             const player = init_player();
-            player.action({dapai:{l:2,p:'z1_'}});
-            player.action({fulou:{l:1,m:'z111+'}}, reply);
+            player.action({dapai:{l:2,p:'z3_'}});
+            player.action({fulou:{l:1,m:'z333+'}}, reply);
             assert.deepEqual(_reply, {});
         });
 
@@ -195,6 +241,16 @@ suite('Player', ()=>{
             player.action({zimo:{l:0,p:'z1'}});
             player.action({gang:{l:0,m:'z1111'}});
             assert.equal(player.shoupai, 'm123p456s789z2,z1111');
+        });
+        test('牌数をカウントすること', ()=>{
+            const player = init_player({shoupai:'m123p456s789z1112'});
+            player.action({zimo:{l:1,p:'z3'}});
+            player.action({gang:{l:1,m:'z3333'}});
+            assert.deepEqual(player._suanpai._paishu,
+                { m: [1,2,3,3,4,4,4,4,4,4],
+                  p: [1,4,4,4,3,3,3,4,4,4],
+                  s: [1,4,4,4,4,4,4,3,3,3],
+                  z: [0,1,3,0,4,4,4,4] });
         });
         test('応答を返すこと', ()=>{
             const player = init_player({shoupai:'m123p456s789z1112'});
@@ -214,6 +270,28 @@ suite('Player', ()=>{
             player._model.shoupai[1].fulou('m222-');
             player.action({gang:{l:1,m:'m222-2'}}, reply);
             assert.deepEqual(_reply, {hule:'-'});
+        });
+    });
+
+    suite('kaigang(kaigang)', ()=>{
+        test('卓情報を設定すること', ()=>{
+            const player = init_player();
+            player.action({kaigang:{baopai:'z1'}});
+            assert.deepEqual(player._model.shan.baopai, ['m1','z1']);
+        });
+        test('牌数をカウントすること', ()=>{
+            const player = init_player();
+            player.action({kaigang:{baopai:'z1'}});
+            assert.deepEqual(player._suanpai._paishu,
+                { m: [1,2,3,3,4,4,4,4,4,4],
+                  p: [1,4,4,4,3,3,3,4,4,4],
+                  s: [1,4,4,4,4,4,4,3,3,3],
+                  z: [0,1,3,3,4,4,4,4] });
+        });
+        test('応答を返さないこと', ()=>{
+            const player = init_player();
+            player.action({kaigang:{baopai:'z1'}}, reply);
+            assert.ok(! _reply);
         });
     });
 
@@ -318,11 +396,7 @@ suite('Player', ()=>{
         test('待ちの枚数が一番多くなる一番右の牌を選択する', ()=>{
             const player = init_player({shoupai:'m26789p24s2449z57m4',
                                         baopai:'z5'});
-            assert.equal(player.select_dapai(), 'z7');
-        });
-        test('待ちの論理上の枚数が一番多くなる一番右の牌を選択する', ()=>{
-            const player = init_player({shoupai:'m22279p22445789m8'});
-            assert.equal(player.select_dapai(), 'p4*');
+            assert.equal(player.select_dapai(), 'z5');
         });
     });
 
