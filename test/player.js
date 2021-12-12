@@ -403,6 +403,11 @@ suite('Player', ()=>{
                                         baopai:'z2'});
             assert.equal(player.select_dapai(), 'm1');
         });
+        test('リーチ者がいる場合はテンパイでもオリる', ()=>{
+            const player = init_player({shoupai:'m123p456s578z11222'});
+            player.dapai({l:3,p:'p5*'});
+            assert.equal(player.select_dapai(), 'p5');
+        });
     });
 
     suite('select_lizhi(p)', ()=>{
