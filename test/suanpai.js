@@ -171,7 +171,7 @@ suite('SuanPai', ()=>{
         });
     });
 
-    suite('.suan_weixian(p, l)', function(){
+    suite('suan_weixian(p, l)', function(){
         let suanpai = new SuanPai({m:1,p:1,s:1});
         test('現物: 0', function(){
             suanpai.dapai({l:1,p:'z1'});
