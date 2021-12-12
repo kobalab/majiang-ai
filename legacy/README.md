@@ -1,5 +1,14 @@
 # 過去の思考ルーチン
 
+### 0101
+[ベタオリのアルゴリズム](https://blog.kobalab.net/entry/20161204/1480808089) (前半)
+  - Player
+    - select_dapai()
+      - リーチ者にはベタオリする
+  - SuanPai
+    - suan_weixian()
+      - 牌の危険度を判定する
+
 ## 0004
 [麻雀の打牌選択ルゴリズム(3)](https://blog.kobalab.net/entry/20160105/1451998413)
   - Player

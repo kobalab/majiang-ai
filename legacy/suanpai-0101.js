@@ -1,5 +1,7 @@
 /*
- *  SuanPai
+ *  SuanPai 0101
+ *    - suan_weixian()
+ *      - 牌の危険度を判定する
  */
 "use strict";
 
