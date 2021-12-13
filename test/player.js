@@ -227,11 +227,17 @@ suite('Player', ()=>{
             assert.deepEqual(_reply, {});
         });
 
-        test('打牌する', ()=>{
+        test('打牌すること', ()=>{
             const player = init_player({shoupai:'m123p456s789z1123'});
             player.action({dapai:{l:1,p:'z1'}});
             player.action({fulou:{l:0,m:'z111+'}}, reply);
             assert.deepEqual(_reply, {dapai:'z3'});
+        });
+        test('自身の大明槓の後は打牌せず、空応答を返すこと', ()=>{
+            const player = init_player({shoupai:'m123p456s789z1112'});
+            player.action({dapai:{l:1,p:'z1'}});
+            player.action({fulou:{l:0,m:'z1111+'}}, reply);
+            assert.deepEqual(_reply, {});
         });
     });
 
