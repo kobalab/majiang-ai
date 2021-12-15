@@ -1,6 +1,6 @@
 {
   "name": "@kobalab/majiang-ai",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "電脳麻将の思考ルーチン",
   "publishConfig": {
     "access": "public"
