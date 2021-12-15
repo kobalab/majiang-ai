@@ -10,24 +10,21 @@ function init_player(param = {}) {
 
     const player = new Player();
 
-    const msg = [
-        { kaiju: { id: 0, rule: Majiang.rule(), title: 'タイトル',
-                   player: ['私','下家','対面','上家'], qijia: 0 } },
-        { qipai: { zhuangfeng: 0, jushu: 0, changbang: 0, lizhibang: 0,
-                   defen: [ 25000, 25000, 25000, 25000 ], baopai: 'm1',
-                   shoupai: ['','','',''] } },
-    ];
+    const kaiju = { id: 0, rule: Majiang.rule(), title: 'タイトル',
+                    player: ['私','下家','対面','上家'], qijia: 0 };
+    const qipai = { zhuangfeng: 0, jushu: 0, changbang: 0, lizhibang: 0,
+                    defen: [ 25000, 25000, 25000, 25000 ], baopai: 'm1',
+                    shoupai: ['','','',''] };
 
-    let kaiju = msg.find(d=> d.kaiju).kaiju;
-    let qipai = msg.find(d=> d.qipai).qipai;
+    if (param.rule) kaiju.rule = param.rule;
 
     let menfeng = (kaiju.id + 4 - kaiju.qijia + 4 - qipai.jushu) % 4;
-    qipai.shoupai[menfeng] = param.shoupai || 'm123p456s789z1123';
+    qipai.shoupai[menfeng] = param.shoupai ?? 'm123p456s789z1123';
     if (param.baopai) qipai.baopai = param.baopai;
 
-    for (let d of msg) {
-        player.action(d);
-    }
+    player.action({kaiju:kaiju});
+    player.action({qipai:qipai});
+
     _reply = null;
 
     return player;
@@ -166,8 +163,8 @@ suite('Player', ()=>{
         });
         test('応答を返すこと', ()=>{
             const player = init_player();
-            player.action({zimo:{l:1,p:'z1'}});
-            player.action({dapai:{l:1,p:'z1_'}}, reply);
+            player.action({zimo:{l:1,p:'z2'}});
+            player.action({dapai:{l:1,p:'z2_'}}, reply);
             assert.ok(_reply);
         });
         test('自身の手番では空応答を返すこと', ()=>{
@@ -182,7 +179,11 @@ suite('Player', ()=>{
             player.action({dapai:{l:1,p:'z1'}}, reply);
             assert.deepEqual(_reply, {hule:'-'});
         });
-        test('副露する');
+        test('副露する', ()=>{
+            const player = init_player({shoupai:'m123p456s578z1122'});
+            player.action({dapai:{l:1,p:'z1'}}, reply);
+            assert.deepEqual(_reply, {fulou:'z111+'});
+        });
         test('テンパイ宣言する(自分の手番)', ()=>{
             const player = init_player({shoupai:'m123p456s789z11223'});
             while (player.shan.paishu) player.shan.zimo();
@@ -227,11 +228,17 @@ suite('Player', ()=>{
             assert.deepEqual(_reply, {});
         });
 
-        test('打牌する', ()=>{
+        test('打牌すること', ()=>{
             const player = init_player({shoupai:'m123p456s789z1123'});
             player.action({dapai:{l:1,p:'z1'}});
             player.action({fulou:{l:0,m:'z111+'}}, reply);
             assert.deepEqual(_reply, {dapai:'z3'});
+        });
+        test('自身の大明槓の後は打牌せず、空応答を返すこと', ()=>{
+            const player = init_player({shoupai:'m123p456s789z1112'});
+            player.action({dapai:{l:1,p:'z1'}});
+            player.action({fulou:{l:0,m:'z1111+'}}, reply);
+            assert.deepEqual(_reply, {});
         });
     });
 
@@ -375,9 +382,30 @@ suite('Player', ()=>{
     });
 
     suite('select_fulou(dapai)', ()=>{
-        test('副露しない', ()=>{
-            const player = init_player({shoupai:'m11233z55566677'});
-            assert.ok(! player.select_fulou({l:1,p:'z7'}));
+        test('役ありでシャンテン数が進む場合、副露する', ()=>{
+            const player = init_player({shoupai:'m123p456s58z11234'});
+            player.dapai({l:2,p:'z1'});
+            assert.equal(player.select_fulou({l:2,p:'z1'}), 'z111=');
+        });
+        test('役のない副露はしない', ()=>{
+            const player = init_player({shoupai:'m123p456s78z11223'});
+            player.dapai({l:2,p:'z2'});
+            assert.ok(! player.select_fulou({l:2,p:'z2'}));
+        });
+        test('役ありでシャンテン数が変わらなければ大明槓する', ()=>{
+            const player = init_player({shoupai:'m123p456s58z11123'});
+            player.dapai({l:2,p:'z1'});
+            assert.equal(player.select_fulou({l:2,p:'z1'}), 'z1111=');
+        });
+        test('役のない大明槓はしない', ()=>{
+            const player = init_player({shoupai:'m123p456s58z12223'});
+            player.dapai({l:2,p:'z2'});
+            assert.ok(! player.select_fulou({l:2,p:'z2'}));
+        });
+        test('リーチ者がいる場合、2シャンテン以前で副露しない', ()=>{
+            const player = init_player({shoupai:'m123p456s58z11234'});
+            player.dapai({l:2,p:'z1*'});
+            assert.ok(! player.select_fulou({l:2,p:'z1'}));
         });
     });
 
@@ -388,6 +416,11 @@ suite('Player', ()=>{
         });
         test('シャンテン戻しとなるカンはしない', ()=>{
             const player = init_player({shoupai:'m122223p456s789z12'});
+            assert.ok(! player.select_gang());
+        });
+        test('リーチ者がいる場合、テンパイしていなければカンしない', ()=>{
+            const player = init_player({shoupai:'m123p456s578z12222'});
+            player.dapai({l:2,p:'z1*'});
             assert.ok(! player.select_gang());
         });
     });
@@ -403,22 +436,22 @@ suite('Player', ()=>{
                                         baopai:'z2'});
             assert.equal(player.select_dapai(), 'm1');
         });
-        test('リーチ者がいて自身が2シャンテン以上の場合はオリる', function(){
+        test('リーチ者がいて自身が2シャンテン以上の場合はオリる', ()=>{
             let player = init_player({shoupai:'m23p456s578z112234'});
             player.dapai({l:3,p:'p5*'});
             assert.equal(player.select_dapai(), 'p5');
         });
-        test('リーチ者がいて自身が1シャンテンの場合は無スジ以外は押す', function(){
+        test('リーチ者がいて自身が1シャンテンの場合は無スジ以外は押す', ()=>{
             let player = init_player({shoupai:'m123p456s578z11224'});
             player.dapai({l:3,p:'p5*'});
             assert.equal(player.select_dapai(), 'z4_');
         });
-        test('リーチ者がいて自身が1シャンテンの場合でも無スジは押さない', function(){
+        test('リーチ者がいて自身が1シャンテンの場合でも無スジは押さない', ()=>{
             let player = init_player({shoupai:'m1123p456s578z1122'});
             player.dapai({l:3,p:'p5*'});
             assert.equal(player.select_dapai(), 'p5');
         });
-        test('リーチ者がいても自身もテンパイした場合はリーチする', function(){
+        test('リーチ者がいても自身もテンパイした場合はリーチする', ()=>{
             let player = init_player({shoupai:'m123p456s5789z1122'});
             player.dapai({l:3,p:'p5*'});
             assert.equal(player.select_dapai(), 's5*');
@@ -438,5 +471,70 @@ suite('Player', ()=>{
             while (player.shan.paishu) player.shan.zimo();
             assert.ok(player.select_daopai());
         })
+    });
+
+    suite('xiangting(shoupai)', ()=>{
+        test('役なし副露のシャンテン数は無限大', ()=>{
+            const player = init_player({shoupai:'s789z44333,m123-,p456-'});
+            assert.equal(player.xiangting(player.shoupai), Infinity);
+        });
+        test('役牌副露のシャンテン数', ()=>{
+            const player = init_player({shoupai:'m123p456s789z23,z111='});
+            assert.equal(player.xiangting(player.shoupai), 0);
+        });
+        test('役牌暗刻のシャンテン数', ()=>{
+            const player = init_player({shoupai:'p456s789z11123,m123-'});
+            assert.equal(player.xiangting(player.shoupai), 0);
+        });
+        test('役牌バックのシャンテン数', ()=>{
+            const player = init_player({shoupai:'p456s789z11333,m123-'});
+            assert.equal(player.xiangting(player.shoupai), 0);
+        });
+        test('喰いタンのシャンテン数', ()=>{
+            const player = init_player({shoupai:'m123p456m66777,s6-78'});
+            assert.equal(player.xiangting(player.shoupai), 0);
+        });
+        test('喰いタンなし', ()=>{
+            const rule = Majiang.rule({'クイタンあり': false});
+            const player = init_player({shoupai:'m123p456m66,s6-78,m777=',
+                                        rule:rule});
+            assert.equal(player.xiangting(player.shoupai), Infinity);
+        });
+        test('トイトイのシャンテン数', ()=>{
+            const player = init_player({shoupai:'p222789s99z333,m111+'});
+            assert.equal(player.xiangting(player.shoupai), 1);
+        });
+        test('6対子形のシャンテン数', ()=>{
+            const player = init_player({shoupai:'p2277s5599z333,m111+,'});
+            assert.equal(player.xiangting(player.shoupai), 1);
+        });
+        test('染め手のシャンテン数', ()=>{
+            const player = init_player({shoupai:'m2p89s2355z7,z333=,s7-89,'});
+            assert.equal(player.xiangting(player.shoupai), 2);
+        });
+    });
+
+    suite('.tingpai(shoupai)', ()=>{
+        test('役なし副露に有効牌なし', ()=>{
+            const player = init_player({shoupai:'s789z4433,m123-,p456-'});
+            assert.deepEqual(player.tingpai(player.shoupai), []);
+        });
+        test('役牌バックの有効牌', ()=>{
+            const player = init_player({shoupai:'p456s789z1133,m123-'});
+            assert.deepEqual(player.tingpai(player.shoupai), ['z1']);
+        });
+        test('喰いタンの有効牌', ()=>{
+            const player = init_player({shoupai:'m23p456m66777,s6-78'});
+            assert.deepEqual(player.tingpai(player.shoupai), ['m4']);
+        });
+        test('トイトイの有効牌', ()=>{
+            const player = init_player({shoupai:'p22278s99z333,m111+'});
+            assert.deepEqual(player.tingpai(player.shoupai), ['p7','p8','s9']);
+        });
+        test('染め手の有効牌', ()=>{
+            const player = init_player({shoupai:'p9s2355z7,z333=,s7-89'});
+            assert.deepEqual(player.tingpai(player.shoupai),
+                                                ['s1','s4','s5','z7']);
+        });
     });
 });

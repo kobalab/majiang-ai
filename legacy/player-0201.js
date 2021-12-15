@@ -1,14 +1,22 @@
-/*!
- *  @kobalab/majiang-ai v0.2.1
- *
- *  Copyright(C) 2021 Satoshi Kobayashi
- *  Released under the MIT license
- *  https://github.com/kobalab/majiang-ai/blob/master/LICENSE
+/*
+ *  思考ルーチン 0201
+ *    - select_fulou()
+ *      - 役ありでシャンテン数が進む場合、副露する
+ *      - 役ありでシャンテン数が変わらなければ大明槓する
+ *      - リーチ者がいる場合、2シャンテン以前で副露しない
+ *    - select_gang()
+ *      - リーチ者がいる場合、テンパイしていなければカンしない
+ *    - select_dapai()
+ *      - 役ありでシャンテン数が減る牌を有効牌とする
+ *    - xiangting()
+ *      - 役ありのシャンテン数を返す
+ *    - tingpai()
+ *      - 役ありの有効牌を返す
  */
 "use strict";
 
 const Majiang = require('@kobalab/majiang-core');
-const SuanPai = require('./suanpai');
+const SuanPai = require('./suanpai-0101');
 
 module.exports = class Player extends Majiang.Player {
 
