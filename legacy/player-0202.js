@@ -1,14 +1,14 @@
-/*!
- *  @kobalab/majiang-ai v0.3.0
- *
- *  Copyright(C) 2021 Satoshi Kobayashi
- *  Released under the MIT license
- *  https://github.com/kobalab/majiang-ai/blob/master/LICENSE
+/*
+ *  思考ルーチン 0202
+ *    - select_dapai()
+ *      - 副露を考慮した待ち牌の枚数で打牌を選択する
+ *    - tingpai()
+ *      - 役ありで副露可能な牌に印をつける
  */
 "use strict";
 
 const Majiang = require('@kobalab/majiang-core');
-const SuanPai = require('./suanpai');
+const SuanPai = require('./suanpai-0101');
 
 module.exports = class Player extends Majiang.Player {
 
