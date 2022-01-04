@@ -442,22 +442,22 @@ suite('Player', ()=>{
             assert.equal(player.select_dapai(), 'p9');
         });
         test('リーチ者がいて自身が2シャンテン以上の場合はオリる', ()=>{
-            let player = init_player({shoupai:'m23p456s578z112234'});
+            const player = init_player({shoupai:'m23p456s578z112234'});
             player.dapai({l:3,p:'p5*'});
             assert.equal(player.select_dapai(), 'p5');
         });
         test('リーチ者がいて自身が1シャンテンの場合は無スジ以外は押す', ()=>{
-            let player = init_player({shoupai:'m123p456s578z11224'});
+            const player = init_player({shoupai:'m123p456s578z11224'});
             player.dapai({l:3,p:'p5*'});
             assert.equal(player.select_dapai(), 'z4_');
         });
         test('リーチ者がいて自身が1シャンテンの場合でも無スジは押さない', ()=>{
-            let player = init_player({shoupai:'m1123p456s578z1122'});
+            const player = init_player({shoupai:'m1123p456s578z1122'});
             player.dapai({l:3,p:'p5*'});
             assert.equal(player.select_dapai(), 'p5');
         });
         test('リーチ者がいても自身もテンパイした場合はリーチする', ()=>{
-            let player = init_player({shoupai:'m123p456s5789z1122'});
+            const player = init_player({shoupai:'m123p456s5789z1122'});
             player.dapai({l:3,p:'p5*'});
             assert.equal(player.select_dapai(), 's5*');
         });
@@ -519,7 +519,7 @@ suite('Player', ()=>{
         });
     });
 
-    suite('.tingpai(shoupai)', ()=>{
+    suite('tingpai(shoupai)', ()=>{
         test('役なし副露に有効牌なし', ()=>{
             const player = init_player({shoupai:'s789z4433,m123-,p456-'});
             assert.deepEqual(player.tingpai(player.shoupai), []);
