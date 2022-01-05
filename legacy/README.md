@@ -1,5 +1,20 @@
 # 過去の思考ルーチン
 
+### 0301
+[麻雀の打牌選択アルゴリズム(4)](https://blog.kobalab.net/entry/20170731/1501502063)<br>
+[麻雀の打牌選択アルゴリズム(5)](https://blog.kobalab.net/entry/20170802/1501673312)
+  - Player
+    - select_dapai()
+      - 和了打点を元にした評価値で打牌を選択する
+    - eval_shoupai()
+      - 和了打点から評価値を算出する
+    - get_defen()
+      - 評価値算出用の和了打点を計算する
+  - SuanPai
+    - paishu_all()
+      - 赤牌を区別して残り牌数を返す
+
+
 ## 0202
 [麻雀の副露判断アルゴリズム(4)](https://blog.kobalab.net/entry/20161215/1481809226)
   - Player
