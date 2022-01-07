@@ -1,14 +1,17 @@
-/*!
- *  @kobalab/majiang-ai v0.3.1
- *
- *  Copyright(C) 2021 Satoshi Kobayashi
- *  Released under the MIT license
- *  https://github.com/kobalab/majiang-ai/blob/master/LICENSE
+/*
+ *  思考ルーチン 0302
+ *    - select_dapai()
+ *      - シャンテン戻しの評価値も計算する
+ *    - eval_shoupai()
+ *      - シャンテン数に応じて評価値を調整する
+ *      - シャンテン戻しの場合、フリテンとなった牌姿の評価値を0とする
+ *    - eval_backtrack()
+ *      - シャンテン戻しの手牌を評価する
  */
 "use strict";
 
 const Majiang = require('@kobalab/majiang-core');
-const SuanPai = require('./suanpai');
+const SuanPai = require('./suanpai-0301');
 
 const width = [12, 12*6, 12*6*3];
 
