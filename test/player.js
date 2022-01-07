@@ -447,6 +447,16 @@ suite('Player', ()=>{
                                         baopai:'s9'});
             assert.equal(player.select_dapai(), 's4*');
         });
+        test('期待値が高くなる場合はシャンテン戻しを選択する', ()=>{
+            const player = init_player({shoupai:'m123p1234789s3388',
+                                        baopai:'p0'});
+            assert.equal(player.select_dapai(), 's3');
+        });
+        test('フリテンとなる場合はシャンテン戻しを選択しない', ()=>{
+            const player = init_player({shoupai:'m12p19s19z1234567m1',
+                                        baopai:'s3'});
+            assert.equal(player.select_dapai(), 'm2*');
+        });
         test('リーチ者がいて自身が2シャンテン以上の場合はオリる', ()=>{
             const player = init_player({shoupai:'m23p456s578z112234'});
             player.dapai({l:3,p:'p5*'});
@@ -590,19 +600,19 @@ suite('Player', ()=>{
             const player = init_player({shoupai:'m123678p123s1388*',
                                         menfeng:1, baopai:'s9'});
             let paishu = player._suanpai.paishu_all();
-            assert.equal(player.eval_shoupai(player.shoupai, paishu), 32000);
+            assert.equal(player.eval_shoupai(player.shoupai, paishu), 32000/12);
         });
         test('打牌可能な牌姿の場合は、打牌後の牌姿の評価値の最大値を評価値とする', ()=>{
             const player = init_player({shoupai:'m123678p123s13488',
                                         menfeng:1, baopai:'s9'});
             let paishu = player._suanpai.paishu_all();
-            assert.equal(player.eval_shoupai(player.shoupai, paishu), 32000);
+            assert.equal(player.eval_shoupai(player.shoupai, paishu), 32000/12);
         });
         test('残り枚数0の牌は評価時に手牌に加えない', ()=>{
             const player = init_player({shoupai:'m34p123456s789z13z3',
                                         menfeng:1, baopai:'m0'});
             let paishu = player._suanpai.paishu_all();
-            assert.equal(player.eval_shoupai(player.shoupai, paishu), 18900);
+            assert.equal(player.eval_shoupai(player.shoupai, paishu), 18900/12);
         });
         test('3シャンテン以上の場合は鳴きを考慮した待ち牌数を評価値とする', ()=>{
             const player = init_player({shoupai:'m569p4s5778z11335',

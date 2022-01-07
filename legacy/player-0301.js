@@ -1,16 +1,16 @@
-/*!
- *  @kobalab/majiang-ai v0.3.2
- *
- *  Copyright(C) 2021 Satoshi Kobayashi
- *  Released under the MIT license
- *  https://github.com/kobalab/majiang-ai/blob/master/LICENSE
+/*
+ *  思考ルーチン 0301
+ *    - select_dapai()
+ *      - 和了打点を元にした評価値で打牌を選択する
+ *    - eval_shoupai()
+ *      - 和了打点から評価値を算出する
+ *    - get_defen()
+ *      - 評価値算出用の和了打点を計算する
  */
 "use strict";
 
 const Majiang = require('@kobalab/majiang-core');
-const SuanPai = require('./suanpai');
-
-const width = [12, 12*6, 12*6*3];
+const SuanPai = require('./suanpai-0301');
 
 function add_hongpai(tingpai) {
     let pai = [];
@@ -171,43 +171,19 @@ module.exports = class Player extends Majiang.Player {
             }
         }
 
-        let dapai, max = 0, min_tingpai = 0, backtrack = [];
+        let dapai, max = 0;
         let n_xiangting = Majiang.Util.xiangting(this.shoupai);
         let paishu = this._suanpai.paishu_all();
         for (let p of this.get_dapai(this.shoupai)) {
             if (! dapai) dapai = p;
             let shoupai = this.shoupai.clone().dapai(p);
-            if (Majiang.Util.xiangting(shoupai) > n_xiangting) {
-                if (n_xiangting < 2) backtrack.push(p);
-                continue;
-            }
+            if (Majiang.Util.xiangting(shoupai) > n_xiangting) continue;
 
             let ev = this.eval_shoupai(shoupai, paishu);
             let x  = 1 - this._suanpai.paijia(p) / 100 + ev;
 
-            let n_tingpai = Majiang.Util.tingpai(shoupai)
-                                .map(p => paishu[p]).reduce((x, y)=> x + y);
-
             if (x >= max) {
-                max         = x;
-                dapai       = p;
-                min_tingpai = n_tingpai * 6;
-            }
-        }
-        let tmp_max = max;
-
-        for (let p of backtrack) {
-            let shoupai = this.shoupai.clone().dapai(p);
-            let n_tingpai = Majiang.Util.tingpai(shoupai)
-                                .map(p => paishu[p]).reduce((x, y)=> x + y);
-            if (n_tingpai < min_tingpai) continue;
-
-            let back = p[0] + (+p[1]||5);
-            let ev = this.eval_backtrack(shoupai, paishu, back, tmp_max * 2);
-            let x  = 1 - this._suanpai.paijia(p) / 100 + ev;
-
-            if (x >= max) {
-                max   = x;
+                max = x;
                 dapai = p;
             }
         }
@@ -358,9 +334,9 @@ module.exports = class Player extends Majiang.Player {
         return hule.defen;
     }
 
-    eval_shoupai(shoupai, paishu, back) {
+    eval_shoupai(shoupai, paishu) {
 
-        let paistr = shoupai.toString() + (back ? `:${back}` : '');
+        let paistr = shoupai.toString();
         if (this._eval_cache[paistr] != null) return this._eval_cache[paistr];
 
         let rv = 0;
@@ -374,14 +350,13 @@ module.exports = class Player extends Majiang.Player {
                 let new_shoupai = shoupai.clone().dapai(p);
                 if (Majiang.Util.xiangting(new_shoupai) > n_xiangting) continue;
 
-                let ev = this.eval_shoupai(new_shoupai, paishu, back);
+                let ev = this.eval_shoupai(new_shoupai, paishu);
 
                 if (ev > rv) rv = ev;
             }
         }
         else if (n_xiangting < 3) {
             for (let p of add_hongpai(Majiang.Util.tingpai(shoupai))) {
-                if (p == back) { rv = 0; break }
                 if (paishu[p] == 0) continue;
                 let new_shoupai = shoupai.clone().zimo(p);
                 paishu[p]--;
@@ -391,7 +366,6 @@ module.exports = class Player extends Majiang.Player {
                 paishu[p]++;
                 rv += ev * paishu[p];
             }
-            rv /= width[n_xiangting];
         }
         else {
             for (let p of add_hongpai(this.tingpai(shoupai))) {
@@ -405,27 +379,5 @@ module.exports = class Player extends Majiang.Player {
 
         this._eval_cache[paistr] = rv;
         return rv;
-    }
-
-    eval_backtrack(shoupai, paishu, back, min) {
-
-        let n_xiangting = Majiang.Util.xiangting(shoupai);
-
-        let rv = 0
-        for (let p of add_hongpai(Majiang.Util.tingpai(shoupai))) {
-            if (p.replace(/0/,'5') == back) continue;
-            if (paishu[p] == 0)             continue;
-
-            let new_shoupai = shoupai.clone().zimo(p);
-            paishu[p]--;
-
-            let ev = this.eval_shoupai(new_shoupai, paishu, back);
-
-            paishu[p]++;
-            if (ev < min) continue;
-
-            rv += ev * paishu[p];
-        }
-        return rv / width[n_xiangting];
     }
 }
