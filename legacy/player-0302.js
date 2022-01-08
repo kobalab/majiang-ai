@@ -389,7 +389,7 @@ module.exports = class Player extends Majiang.Player {
                 let new_shoupai = shoupai.clone().zimo(p);
                 paishu[p]--;
 
-                let ev = this.eval_shoupai(new_shoupai, paishu);
+                let ev = this.eval_shoupai(new_shoupai, paishu, back);
 
                 paishu[p]++;
                 rv += ev * paishu[p];
