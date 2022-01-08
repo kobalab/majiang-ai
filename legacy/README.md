@@ -1,5 +1,13 @@
 # 過去の思考ルーチン
 
+### 0303
+[麻雀の打牌選択アルゴリズム(8)](https://blog.kobalab.net/entry/20170819/1503150574)
+  - Player
+    - eval_shoupai()
+      - 副露したパターンも評価値に加える
+    - eval_fulou()
+      - 副露したパターンの手牌を評価する
+
 ### 0302
 [麻雀の打牌選択アルゴリズム(6)](https://blog.kobalab.net/entry/20170806/1502026197)<br>
 [麻雀の打牌選択アルゴリズム(7)](https://blog.kobalab.net/entry/20170813/1502605785)
