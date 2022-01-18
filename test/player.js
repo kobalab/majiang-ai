@@ -393,10 +393,26 @@ suite('Player', ()=>{
             player.dapai({l:2,p:'z2'});
             assert.ok(! player.select_fulou({l:2,p:'z2'}));
         });
-        test('役ありでシャンテン数が変わらなければ大明槓する', ()=>{
-            const player = init_player({shoupai:'m123p456s58z11123'});
+        test('3シャンテンに戻る副露はしない', ()=>{
+            const player = init_player({shoupai:'m335p244899s2599'});
+            player.dapai({l:2,p:'p9'});
+            assert.ok(! player.select_fulou({l:2,p:'p9'}));
+        });
+        test('シャンテン数が変わらなくても期待値が上がる場合は副露を選択する', ()=>{
+            const player = init_player({shoupai:'m56778p4s2478z255',
+                                        baopai:'z1'});
+            player.dapai({l:2,p:'z5'});
+            assert.equal(player.select_fulou({l:2,p:'z5'}), 'z555=');
+        });
+        test('シャンテン数が進んでも期待値が上がらない場合は副露しない', ()=>{
+            const player = init_player({shoupai:'m334455p56888s78'});
+            player.dapai({l:3,p:'s6'});
+            assert.ok(! player.select_fulou({l:3,p:'s6'}));
+        });
+        test('役ありでも2シャンテンまでは大明槓しない', ()=>{
+            const player = init_player({shoupai:'m123p147s78z11123'});
             player.dapai({l:2,p:'z1'});
-            assert.equal(player.select_fulou({l:2,p:'z1'}), 'z1111=');
+            assert.ok(! player.select_fulou({l:2,p:'z1'}));
         });
         test('役のない大明槓はしない', ()=>{
             const player = init_player({shoupai:'m123p456s58z12223'});
@@ -408,21 +424,50 @@ suite('Player', ()=>{
             player.dapai({l:2,p:'z1*'});
             assert.ok(! player.select_fulou({l:2,p:'z1'}));
         });
+        test('リーチ者がいる場合、テンパイとならない副露はしない', ()=>{
+            const player = init_player({shoupai:'m56778p4s24789z55'});
+            player.dapai({l:2,p:'z5*'});
+            assert.ok(! player.select_fulou({l:2,p:'z5*'}));
+        });
     });
 
     suite('select_gang()', ()=>{
-        test('シャンテン数が変わらなければカンする', ()=>{
-            const player = init_player({shoupai:'m123p456s789z12222'});
-            assert.equal(player.select_gang(), 'z2222');
+        test('シャンテン数が変わらない場合、暗槓する', ()=>{
+            const player = init_player({shoupai:'m234p147s1477z111z1'});
+            assert.equal(player.select_gang(), 'z1111');
         });
-        test('シャンテン戻しとなるカンはしない', ()=>{
-            const player = init_player({shoupai:'m122223p456s789z12'});
+        test('シャンテン数が変わらない場合、加槓する', ()=>{
+            const player = init_player({shoupai:'m234p147s1477z1,z111+'});
+            assert.equal(player.select_gang(), 'z111+1');
+        });
+        test('シャンテン数が戻る暗槓はしない', ()=>{
+            const player = init_player({shoupai:'m569p269s12222z136'});
             assert.ok(! player.select_gang());
         });
-        test('リーチ者がいる場合、テンパイしていなければカンしない', ()=>{
-            const player = init_player({shoupai:'m123p456s578z12222'});
-            player.dapai({l:2,p:'z1*'});
+        test('シャンテン数が戻っても期待値が上がる場合は暗槓する', ()=>{
+            const player = init_player({shoupai:'m88p0778888s2m5,s067-',
+                                        baopai:'p4'});
+            assert.equal(player.select_gang(), 'p8888');
+        });
+        test('期待値が上がらない場合シャンテン数が戻る暗槓はしない', ()=>{
+            let player = init_player({shoupai:'m111123p456s789z12'});
             assert.ok(! player.select_gang());
+        });
+        test('3シャンテンに戻る暗槓はしない', ()=>{
+            const player = init_player({shoupai:'m133p405557999z36'});
+            assert.ok(! player.select_gang());
+        });
+        test('リーチ者がいる場合、テンパイする前は槓しない', ()=>{
+            const player = init_player({shoupai:'m123p456s579z2,z111='});
+            player.dapai({l:3,p:'m1*'});
+            player.zimo({l:0,p:'z1'})
+            assert.ok(! player.select_gang());
+        });
+        test('リーチ者がいても、テンパイ後は槓する', ()=>{
+            const player = init_player({shoupai:'m123p456s789z2,z111='});
+            player.dapai({l:3,p:'m1*'});
+            player.zimo({l:0,p:'z1'})
+            assert.equal(player.select_gang(), 'z111=1');
         });
     });
 

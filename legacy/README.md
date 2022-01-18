@@ -1,5 +1,17 @@
 # 過去の思考ルーチン
 
+### 0304
+[麻雀の副露判断アルゴリズム(5)](https://blog.kobalab.net/entry/20170822/1503401216)
+  - Player
+    - select_fulou()
+      - 評価値を元に副露判断する
+    - select_gang()
+      - 評価値を元に加槓・暗槓を判断する
+    - eval_shoupai()
+      - 副露しない判断した場合の処理を追加
+    - eval_fulou()
+      - 副露しない判断した場合の処理を追加
+
 ### 0303
 [麻雀の打牌選択アルゴリズム(8)](https://blog.kobalab.net/entry/20170819/1503150574)
   - Player

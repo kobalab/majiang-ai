@@ -1,14 +1,18 @@
-/*!
- *  @kobalab/majiang-ai v0.3.3
- *
- *  Copyright(C) 2021 Satoshi Kobayashi
- *  Released under the MIT license
- *  https://github.com/kobalab/majiang-ai/blob/master/LICENSE
+/*
+ *  思考ルーチン 0304
+ *    - select_fulou()
+ *      - 評価値を元に副露判断する
+ *    - select_gang()
+ *      - 評価値を元に加槓・暗槓を判断する
+ *    - eval_shoupai()
+ *      - 副露しない判断した場合の処理を追加
+ *    - eval_fulou()
+ *      - 副露しない判断した場合の処理を追加
  */
 "use strict";
 
 const Majiang = require('@kobalab/majiang-core');
-const SuanPai = require('./suanpai');
+const SuanPai = require('./suanpai-0301');
 
 const width = [12, 12*6, 12*6*3];
 
