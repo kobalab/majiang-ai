@@ -189,7 +189,7 @@ module.exports = class Player extends Majiang.Player {
             let x  = 1 - this._suanpai.paijia(p) / 100 + ev;
 
             let n_tingpai = Majiang.Util.tingpai(shoupai)
-                                .map(p => paishu[p]).reduce((x, y)=> x + y);
+                                .map(p => paishu[p]).reduce((x, y)=> x + y, 0);
 
             if (x >= max) {
                 max         = x;
@@ -202,7 +202,7 @@ module.exports = class Player extends Majiang.Player {
         for (let p of backtrack) {
             let shoupai = this.shoupai.clone().dapai(p);
             let n_tingpai = Majiang.Util.tingpai(shoupai)
-                                .map(p => paishu[p]).reduce((x, y)=> x + y);
+                                .map(p => paishu[p]).reduce((x, y)=> x + y, 0);
             if (n_tingpai < min_tingpai) continue;
 
             let back = p[0] + (+p[1]||5);
