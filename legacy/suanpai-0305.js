@@ -1,5 +1,7 @@
 /*
- *  SuanPai
+ *  SuanPai 0305
+ *    - make_paijia()
+ *      - 手牌から染め手補正した牌の評価値を返す関数を生成する
  */
 "use strict";
 

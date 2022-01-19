@@ -1,5 +1,14 @@
 # 過去の思考ルーチン
 
+### 0305
+[麻雀の打牌選択アルゴリズム(9)](https://blog.kobalab.net/entry/20170826/1503705167)
+  - Player
+    - select_dapai()
+      - 染め手を考慮して打牌を選択する
+  - SuanPai
+    - make_paijia()
+      - 手牌から染め手補正した牌の評価値を返す関数を生成する
+
 ### 0304
 [麻雀の副露判断アルゴリズム(5)](https://blog.kobalab.net/entry/20170822/1503401216)
   - Player
