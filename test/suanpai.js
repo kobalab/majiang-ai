@@ -1,6 +1,7 @@
 const assert = require('assert');
 
 const SuanPai = require('../lib/suanpai');
+const Majiang = require('@kobalab/majiang-core');
 
 function init_suanpai(param = {}) {
 
@@ -179,6 +180,39 @@ suite('SuanPai', ()=>{
                 s: [38,12,16,21,21,19,17,17, 9, 8],
                 z: [ 0, 0,48, 3, 4, 8, 8, 8],
             });
+        });
+    });
+
+    suite('make_paijia(shoupai)', ()=>{
+        test('一色手を狙う場合、染め色の孤立牌の評価値は2倍とする', ()=>{
+            const suanpai = init_suanpai();
+            const paijia = suanpai.make_paijia(
+                            Majiang.Shoupai.fromString('p123s789z1234,p456-'));
+            assert.equal(paijia('p1'), 24);
+        });
+        test('一色手を狙う場合、字牌の孤立牌の評価値は4倍とする', ()=>{
+            const suanpai = init_suanpai();
+            const paijia = suanpai.make_paijia(
+                            Majiang.Shoupai.fromString('p123456s789z1234'));
+            assert.equal(paijia('z4'), 16);
+        });
+        test('風牌が9枚以上ある場合は、風牌の評価値を8倍とする', ()=>{
+            const suanpai = init_suanpai();
+            const paijia = suanpai.make_paijia(
+                            Majiang.Shoupai.fromString('m12p34z111222,z333='));
+            assert.equal(paijia('z4'), 32);
+        });
+        test('三元牌が6枚以上ある場合は、三元牌の評価値を8倍とする', ()=>{
+            const suanpai = init_suanpai();
+            const paijia = suanpai.make_paijia(
+                            Majiang.Shoupai.fromString('m123p4567z555,z666='));
+            assert.equal(paijia('z7'), 64);
+        });
+        test('それ以外の場合は評価値は変化なし', ()=>{
+            const suanpai = init_suanpai();
+            const paijia = suanpai.make_paijia(
+                            Majiang.Shoupai.fromString('m123p456s789z1123'));
+            assert.equal(paijia('p1'), 12);
         });
     });
 
