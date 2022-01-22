@@ -8,7 +8,8 @@ const zlib = require('zlib');
 
 const Majiang = require('@kobalab/majiang-core');
 const Game    = require('./game');
-const rule    = Majiang.rule({'ノーテン宣言あり':true});
+const rule    = Majiang.rule({'ノーテン宣言あり':true,
+                              '順位点':['20','10','-10','-20']});
 
 function select_player(n = '') {
     return new (n.match(/^\d{4}$/) ? require(`../legacy/player-${n}`)
