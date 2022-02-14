@@ -49,3 +49,34 @@ console.log(n_xiangting,
             player.eval_shoupai(player.shoupai, paishu).toFixed(2));
 
 if (argv.silent) process.exit(0);
+
+let dapai = player.get_dapai(player.shoupai);
+if (dapai) {
+    let max = 0;
+    for (let p of dapai) {
+        if (p.substr(-1) == '_' && dapai.find(_=>_ == p.substr(0,2))) continue;
+        let shoupai = player.shoupai.clone().dapai(p);
+        let x = Majiang.Util.xiangting(shoupai);
+        if (x > n_xiangting) continue;
+        let ev = player.eval_shoupai(shoupai, paishu);
+        let tingpai = Majiang.Util.tingpai(shoupai);
+        console.log(p.substr(0,2), x, ev.toFixed(2),
+                    tingpai.join(','),
+                    tingpai.map(_=>player._suanpai._paishu[_[0]][_[1]])
+                           .reduce((x,y)=> x + y, 0));
+        if (ev > max) max = ev;
+    }
+    for (let p of dapai) {
+        if (p.substr(-1) == '_' && dapai.find(_=>_ == p.substr(0,2))) continue;
+        let shoupai = player.shoupai.clone().dapai(p);
+        let x = Majiang.Util.xiangting(shoupai);
+        if (x == n_xiangting) continue;
+        let tingpai = Majiang.Util.tingpai(shoupai);
+        console.log(p.substr(0,2), x,
+                    player.eval_backtrack(
+                                shoupai, paishu, p, max * 2 + 1).toFixed(2),
+                    tingpai.join(','),
+                    tingpai.map(_=>player._suanpai._paishu[_[0]][_[1]])
+                           .reduce((x,y)=> x + y, 0));
+    }
+}
