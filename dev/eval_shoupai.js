@@ -24,6 +24,10 @@ function select_dapai(player, shoupai, paishu) {
         if (ev >= max) {
             max = ev;
             let tingpai = Majiang.Util.tingpai(new_shoupai);
+            if (n_xiangting == 0) {
+                tingpai = tingpai.filter(
+                                    _=>player.get_defen(new_shoupai, _+'='));
+            }
             rv = {
                 ev:      ev.toFixed(2),
                 p:       p,
