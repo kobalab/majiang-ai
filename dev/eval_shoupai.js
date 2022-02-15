@@ -5,6 +5,38 @@
 
 const Majiang = require('@kobalab/majiang-core');
 
+function add_hongpai(tingpai) {
+    let pai = [];
+    for (let p of tingpai) {
+        if (p[0] != 'z' && p[1] == '5') pai.push(p.replace(/5/,'0'));
+        pai.push(p);
+    }
+    return pai;
+}
+
+function select_dapai(player, shoupai, paishu) {
+    let rv, max = 0;
+    let n_xiangting = Majiang.Util.xiangting(shoupai);
+    for (let p of player.get_dapai(shoupai)) {
+        let new_shoupai = shoupai.clone().dapai(p);
+        if (Majiang.Util.xiangting(new_shoupai) > n_xiangting) continue;
+        let ev = player.eval_shoupai(new_shoupai, paishu);
+        if (ev >= max) {
+            max = ev;
+            let tingpai = Majiang.Util.tingpai(new_shoupai);
+            rv = {
+                ev:      ev.toFixed(2),
+                p:       p,
+                shoupai: new_shoupai.toString(),
+                tingpai: tingpai.join(','),
+                n:       add_hongpai(tingpai).map(_=>paishu[_])
+                                             .reduce((x,y)=> x + y, 0)
+            };
+        }
+    }
+    return rv;
+}
+
 const yargs = require('yargs');
 const argv = yargs
     .usage('Usage: $0 牌姿/場風/自風/ドラ/赤牌有無')
@@ -78,5 +110,15 @@ if (dapai) {
                     tingpai.join(','),
                     tingpai.map(_=>player._suanpai._paishu[_[0]][_[1]])
                            .reduce((x,y)=> x + y, 0));
+    }
+}
+else {
+    for (let p of add_hongpai(Majiang.Util.tingpai(player.shoupai))) {
+        if (paishu[p] == 0) continue;
+        paishu[p]--;
+        let shoupai = player.shoupai.clone().zimo(p);
+        let rv = select_dapai(player, shoupai, paishu);
+        console.log(p, paishu[p]+1, rv.ev, rv.p, rv.shoupai, rv.tingpai, rv.n);
+        paishu[p]++;
     }
 }
