@@ -53,7 +53,7 @@ function get_fulou(player, shoupai, p, paishu) {
         let new_shoupai = shoupai.clone().fulou(m);
         if (Majiang.Util.xiangting(new_shoupai) >= n_xiangting) continue;
         let ev = player.eval_shoupai(new_shoupai, paishu);
-        if (ev >= max) {
+        if (ev > max) {
             max = ev;
             rv = select_dapai(player, new_shoupai, paishu);
         }
