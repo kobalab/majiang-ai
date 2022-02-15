@@ -37,6 +37,26 @@ function select_dapai(player, shoupai, paishu) {
     return rv;
 }
 
+function get_fulou(player, shoupai, p, paishu) {
+    const get_mianzi = p[2] == '+'
+                ? (shoupai, p)=>
+                        Majiang.Game.get_peng_mianzi(player._rule, shoupai, p)
+                : (shoupai, p)=>
+                        Majiang.Game.get_chi_mianzi(player._rule, shoupai, p);
+    let rv, max = 0;
+    let n_xiangting = Majiang.Util.xiangting(shoupai);
+    for (let m of get_mianzi(shoupai, p)) {
+        let new_shoupai = shoupai.clone().fulou(m);
+        if (Majiang.Util.xiangting(new_shoupai) >= n_xiangting) continue;
+        let ev = player.eval_shoupai(new_shoupai, paishu);
+        if (ev >= max) {
+            max = ev;
+            rv = select_dapai(player, new_shoupai, paishu);
+        }
+    }
+    return rv;
+}
+
 const yargs = require('yargs');
 const argv = yargs
     .usage('Usage: $0 牌姿/場風/自風/ドラ/赤牌有無')
@@ -116,9 +136,17 @@ else {
     for (let p of add_hongpai(Majiang.Util.tingpai(player.shoupai))) {
         if (paishu[p] == 0) continue;
         paishu[p]--;
+
         let shoupai = player.shoupai.clone().zimo(p);
         let rv = select_dapai(player, shoupai, paishu);
         console.log(p, paishu[p]+1, rv.ev, rv.p, rv.shoupai, rv.tingpai, rv.n);
+
+        rv = get_fulou(player, player.shoupai, p+'+', paishu);
+        if (rv) console.log(p, '+', rv.ev, rv.p, rv.shoupai, rv.tingpai, rv.n);
+
+        rv = get_fulou(player, player.shoupai, p+'-', paishu);
+        if (rv) console.log(p, '-', rv.ev, rv.p, rv.shoupai, rv.tingpai, rv.n);
+
         paishu[p]++;
     }
 }
