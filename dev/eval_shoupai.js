@@ -106,6 +106,8 @@ console.log(n_xiangting,
 
 if (argv.silent) process.exit(0);
 
+if (n_xiangting < 0) process.exit(0);
+
 let dapai = player.get_dapai(player.shoupai);
 if (dapai) {
     let max = 0;
