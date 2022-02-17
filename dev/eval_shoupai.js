@@ -124,6 +124,8 @@ if (dapai) {
                            .reduce((x,y)=> x + y, 0));
         if (ev > max) max = ev;
     }
+    if (n_xiangting >= 2) process.exit(0);
+
     for (let p of dapai) {
         if (p.substr(-1) == '_' && dapai.find(_=>_ == p.substr(0,2))) continue;
         let shoupai = player.shoupai.clone().dapai(p);
