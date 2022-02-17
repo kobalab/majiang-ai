@@ -144,6 +144,12 @@ else {
         paishu[p]--;
 
         let shoupai = player.shoupai.clone().zimo(p);
+
+        if (n_xiangting == 0) {
+            console.log(p, paishu[p]+1, player.get_defen(shoupai));
+            continue;
+        }
+
         let rv = select_dapai(player, shoupai, paishu);
         console.log(p, paishu[p]+1, rv.ev, rv.p, rv.shoupai, rv.tingpai, rv.n);
 
