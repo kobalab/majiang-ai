@@ -1,6 +1,6 @@
 .nyc_output/
 coverage/
-log/
+log*/
 shan/
 bin
 test/
