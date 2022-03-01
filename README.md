@@ -11,7 +11,7 @@ ver.2.0.0 以降の [電脳麻将](https://github.com/kobalab/Majiang) ではこ
 $ npm i @kobalab/majiang-ai
 ```
 
-[GitHubリポジトリ](https://github.com/kobalab/majiang-ai) ではAI開発のためのツールや過去のバージョンのAIも公開していますので、clone や fork してあなた自身の実装を試すことも可能です。
+[GitHubリポジトリ](https://github.com/kobalab/majiang-ai) ではAI開発のためのツールや [過去のバージョンのAI](https://github.com/kobalab/majiang-ai/tree/master/legacy) も公開していますので、clone や fork してあなた自身の実装を試すことも可能です。
 
 ## ライセンス
 [MIT](https://github.com/kobalab/majiang-ai/blob/master/LICENSE)
