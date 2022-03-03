@@ -502,6 +502,11 @@ suite('Player', ()=>{
                                         baopai:'s3'});
             assert.equal(player.select_dapai(), 'm2*');
         });
+        test('赤牌を切ってシャンテン戻しする場合もある', ()=>{
+            const player = init_player({shoupai:'m899p789s3078s9,m111=',
+                                        baopai:'m9'});
+            assert.equal(player.select_dapai(), 's0');
+        });
         test('副露を考慮した期待値で打牌を選択する', ()=>{
             const player = init_player({shoupai:'m66678p34s3077z77m9',
                                         baopai:'m1'});
