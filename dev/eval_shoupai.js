@@ -111,7 +111,7 @@ if (n_xiangting < 0) process.exit(0);
 let dapai = player.get_dapai(player.shoupai);
 if (dapai) {
     let max = 0;
-    for (let m of player.get_gang_mianzi(player.shoupai)) {
+    for (let m of player.get_gang_mianzi(player.shoupai)||[]) {
         let shoupai = player.shoupai.clone().gang(m);
         let x = Majiang.Util.xiangting(shoupai);
         if (x > n_xiangting) continue;
