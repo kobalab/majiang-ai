@@ -52,7 +52,7 @@ $ node dev/eval_shoupai.js m123p1234789s3388/0/0/s3
 [麻雀 定石「何切る」301選](https://www.amazon.co.jp/exec/obidos/ASIN/4861999847/hatena-blog-22/) を解く [mocha](https://mochajs.org/) のテストスクリプト。
 以下のようにアルゴリズム番号を指定することもできます。
 ```sh
-$ LEFACY=0305 npm test dev/select_dapai.js
+$ LEGACY=0305 npm test dev/select_dapai.js
 ```
 
 
