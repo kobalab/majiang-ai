@@ -21,8 +21,7 @@ $ node dev/make_shan.js --times=1000 --hongpai=1 --jushu=40 > shan.json
 
 ### AI自動対局スクリプト
 ```sh
-$ node dev/testplay.js --input=shan.json.gz --output=log.json \
-    --times=100 --skip=10 [ *legacy* [ *legacy* ] ]
+$ node dev/testplay.js --input=shan.json.gz --output=log.json --times=100 --skip=10 0305
 ```
 CLIでAI同士を自動対戦させます。
 
