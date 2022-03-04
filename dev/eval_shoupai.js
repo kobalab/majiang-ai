@@ -63,7 +63,7 @@ function get_fulou(player, shoupai, p, paishu) {
 
 const yargs = require('yargs');
 const argv = yargs
-    .usage('Usage: $0 牌姿/場風/自風/ドラ/赤牌有無')
+    .usage('Usage: $0 牌姿/場風/自風/ドラ/赤牌有無 捨て牌...')
     .option('silent', { alias: 's', boolean: true })
     .option('legacy', { alias: 'l' })
     .demandCommand(1)
@@ -97,6 +97,15 @@ qipai.shoupai[menfeng || 0] = paistr;
 player.qipai(qipai);
 
 for (let p of baopai) player.kaigang({ baopai: p });
+
+if (argv._[1]) {
+    for (let suitstr of argv._[1].match(/[mpsz][\d\_\*\+\=\-\^]+/g) || []) {
+        let s = suitstr[0];
+        for (let n of suitstr.match(/\d/g)) {
+            player._suanpai.decrease(s+n);
+        }
+    }
+}
 
 let paishu = player._suanpai.paishu_all();
 let n_xiangting = Majiang.Util.xiangting(player.shoupai);
