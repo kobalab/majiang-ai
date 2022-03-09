@@ -21,7 +21,7 @@ $ node dev/make_shan.js --times=1000 --hongpai=1 --jushu=40 > shan.json
 
 ### AI自動対局スクリプト
 ```sh
-$ node dev/testplay.js --input=shan.json.gz --output=log.json --times=100 --skip=10 0305
+$ node dev/testplay.js --input=shan.json.gz --output=log.json --times=100 --skip=10 --rule=rule.json 0305
 ```
 CLIでAI同士を自動対局させます。
 
@@ -33,6 +33,8 @@ CLIでAI同士を自動対局させます。
 対局数を指定します。省略時は指定された牌山内の対局数にしたがいます。牌山も指定がない場合は1戦だけ対局します。
 #### --skip, -s
 指定された数分牌山をスキップします。特定の牌山でだけ対局させたいときに便利です。
+#### --rule, -r
+JSONファイルもしくはJSON形式の文字列で [ルール](https://github.com/kobalab/majiang-core/wiki/%E3%83%AB%E3%83%BC%E3%83%AB) を変更します。 
 #### *legacy*
 [過去の思考ルーチン](https://github.com/kobalab/majiang-ai/tree/master/legacy)のアルゴリズム番号を指定します。
 省略時は現在のアルゴリズムでの対局となります。

@@ -8,3 +8,4 @@ dev/
 legacy/
 setver.sh
 test.sh
+rule.json

@@ -8,8 +8,6 @@ const zlib = require('zlib');
 
 const Majiang = require('@kobalab/majiang-core');
 const Game    = require('./game');
-const rule    = Majiang.rule({'ノーテン宣言あり':true,
-                              '順位点':['20','10','-10','-20']});
 
 function select_player(n = '') {
     return new (n.match(/^\d{4}$/) ? require(`../legacy/player-${n}`)
@@ -21,6 +19,13 @@ function get_shan(filename) {
     return JSON.parse(zlib.gunzipSync(fs.readFileSync(filename)).toString());
 }
 
+function get_rule(filename = '{}') {
+    if (filename.match(/\{.*\}/)) {
+        return Majiang.rule(JSON.parse(filename));
+    }
+    return Majiang.rule(JSON.parse(fs.readFileSync(filename)));
+}
+
 const yargs = require('yargs');
 const argv = yargs
     .usage('Usage: $0 [legacy [legacy]]')
@@ -28,6 +33,7 @@ const argv = yargs
     .option('input',    { alias: 'i', description: '入力ファイル(牌山)' } )
     .option('output',   { alias: 'o', description: '出力ファイル(牌譜)' } )
     .option('skip',     { alias: 's', description: '指定した数の牌山をスキップ' } )
+    .option('rule',     { alias: 'r', description: 'ルール' })
     .argv;
 
 const players = [];
@@ -38,6 +44,8 @@ for (let i = 1; i < 4; i++) {
 
 const script = get_shan(argv.input) || [];
 for (let i = 0; i < (argv.skip || 0); i++) script.shift()
+
+const rule = get_rule(argv.rule);
 
 let times = argv.times || script && script.length || 1;
 
