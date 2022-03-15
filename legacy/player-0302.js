@@ -180,7 +180,9 @@ module.exports = class Player extends Majiang.Player {
         for (let p of this.get_dapai(this.shoupai)) {
             if (! dapai) dapai = p;
             let shoupai = this.shoupai.clone().dapai(p);
-            if (Majiang.Util.xiangting(shoupai) > n_xiangting) {
+            if (n_xiangting > 2 && this.xiangting(shoupai) > n_xiangting ||
+                Majiang.Util.xiangting(shoupai) > n_xiangting)
+            {
                 if (n_xiangting < 2) backtrack.push(p);
                 continue;
             }

@@ -177,7 +177,8 @@ module.exports = class Player extends Majiang.Player {
         for (let p of this.get_dapai(this.shoupai)) {
             if (! dapai) dapai = p;
             let shoupai = this.shoupai.clone().dapai(p);
-            if (Majiang.Util.xiangting(shoupai) > n_xiangting) continue;
+            if (n_xiangting > 2 && this.xiangting(shoupai) > n_xiangting ||
+                Majiang.Util.xiangting(shoupai) > n_xiangting) continue;
 
             let ev = this.eval_shoupai(shoupai, paishu);
             let x  = 1 - this._suanpai.paijia(p) / 100 + ev;
