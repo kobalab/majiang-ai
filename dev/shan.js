@@ -7,7 +7,8 @@ const Majiang = require('@kobalab/majiang-core');
 
 module.exports = class Shan {
 
-    constructor(pai) {
+    constructor(pai, rule = Majiang.rule()) {
+        this._rule = rule;
         this._wangpai = pai.splice(0, 14);
         this._qipai   = pai.splice(0, 13 * 4);
         this._zimo    = [[],[],[],[]];
@@ -40,8 +41,16 @@ module.exports = class Shan {
         this._fubaopai.push(this._wangpai.shift());
         return this;
     }
-    close()        { return this }
-    get paishu()   { return this._paishu }
-    get baopai()   { return this._baopai.concat()   }
-    get fubaopai() { return this._fubaopai.concat() }
+    close()      { return this }
+    get paishu() { return this._paishu }
+    get baopai() {
+        if (this._rule['カンドラあり'])   return this._baopai.concat();
+        else                            return [ this._baopai[0] ];
+    }
+    get fubaopai() {
+        if (! this._rule['裏ドラあり']) return;
+        if (this._rule['カンドラあり'] && this._rule['カン裏あり'])
+                                        return this._fubaopai.concat();
+        else                            return [ this._fubaopai[0] ]
+    }
 }

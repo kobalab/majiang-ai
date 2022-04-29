@@ -28,7 +28,7 @@ module.exports = class Game extends Majiang.Game {
         else    pai = this._shan[this._model.jushu].pop();
         if (! pai) console.log('***',
                                this._model.zhuangfeng, this._model.jushu);
-        super.qipai(pai && new Shan(pai));
+        super.qipai(pai && new Shan(pai, this._rule));
     }
     zimo() {
         if (this._model.shan.lunban)
