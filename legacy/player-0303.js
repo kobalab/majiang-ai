@@ -177,7 +177,9 @@ module.exports = class Player extends Majiang.Player {
         for (let p of this.get_dapai(this.shoupai)) {
             if (! dapai) dapai = p;
             let shoupai = this.shoupai.clone().dapai(p);
-            if (Majiang.Util.xiangting(shoupai) > n_xiangting) {
+            if (n_xiangting > 2 && this.xiangting(shoupai) > n_xiangting ||
+                Majiang.Util.xiangting(shoupai) > n_xiangting)
+            {
                 if (n_xiangting < 2) backtrack.push(p);
                 continue;
             }
@@ -186,7 +188,8 @@ module.exports = class Player extends Majiang.Player {
             let x  = 1 - this._suanpai.paijia(p) / 100 + ev;
 
             let n_tingpai = Majiang.Util.tingpai(shoupai)
-                                .map(p => paishu[p]).reduce((x, y)=> x + y, 0);
+                                .map(p => this._suanpai._paishu[p[0]][p[1]])
+                                .reduce((x, y)=> x + y, 0);
 
             if (x >= max) {
                 max         = x;
@@ -199,11 +202,13 @@ module.exports = class Player extends Majiang.Player {
         for (let p of backtrack) {
             let shoupai = this.shoupai.clone().dapai(p);
             let n_tingpai = Majiang.Util.tingpai(shoupai)
-                                .map(p => paishu[p]).reduce((x, y)=> x + y, 0);
+                                .map(p => this._suanpai._paishu[p[0]][p[1]])
+                                .reduce((x, y)=> x + y, 0);
             if (n_tingpai < min_tingpai) continue;
 
             let back = p[0] + (+p[1]||5);
             let ev = this.eval_backtrack(shoupai, paishu, back, tmp_max * 2);
+            if (ev == 0) continue;
             let x  = 1 - this._suanpai.paijia(p) / 100 + ev;
 
             if (x >= max) {
@@ -239,7 +244,7 @@ module.exports = class Player extends Majiang.Player {
             for (let n of [ zhuangfeng + 1, menfeng + 1, 5, 6, 7 ]) {
                 if      (shoupai._bingpai.z[n] >= 3) n_fanpai++;
                 else if (shoupai._bingpai.z[n] == 2
-                         && suanpai._paishu.z[n])    back = n;
+                         && suanpai._paishu.z[n])    back = 'z'+n+n+n+'+';
                 for (let m of shoupai._fulou) {
                     if (m[0] == 'z' && m[1] == n) n_fanpai++;
                 }
@@ -247,7 +252,8 @@ module.exports = class Player extends Majiang.Player {
             if (n_fanpai) return Majiang.Util.xiangting(shoupai);
             if (back) {
                 let new_shoupai = shoupai.clone();
-                new_shoupai._bingpai.z[back] = 3;
+                new_shoupai.fulou(back, false);
+                new_shoupai._zimo = null;
                 return Majiang.Util.xiangting(new_shoupai) + 1;
             }
             return Infinity;

@@ -369,6 +369,28 @@ suite('Player', ()=>{
             const player = init_player({shoupai:'m13p456s789z11,z222='});
             assert.ok(! player.select_hule({l:1,m:'m2222'}, true));
         });
+        test('引継情報域が設定された場合は、和了に関する検討情報を設定する', ()=>{
+            let player, info;
+            player = init_player({shoupai:'m123p456z1122,s789-'});
+            info = [];
+            player.select_hule({l:2,p:'z1'}, null, info);
+            assert.ok(info.length);
+
+            player = init_player({shoupai:'m123p456z11122,s789-'});
+            info = [];
+            player.select_hule(null, null, info);
+            assert.ok(info.length);
+
+            player = init_player({shoupai:'m12p456z33444,s789-'});
+            info = [];
+            player.select_hule({l:2,m:'m333-3'}, 'qianggang', info);
+            assert.ok(info.length);
+
+            player = init_player({shoupai:'m12p456z33444,s789-'});
+            info = [];
+            player.select_hule({l:2,p:'m3'}, null, info);
+            assert.ok(! info.length);
+        });
     });
 
     suite('select_pingju()', ()=>{
@@ -429,6 +451,28 @@ suite('Player', ()=>{
             player.dapai({l:2,p:'z5*'});
             assert.ok(! player.select_fulou({l:2,p:'z5*'}));
         });
+        test('引継情報域が設定された場合は、副露に関する検討情報を設定する', ()=>{
+            let player, info;
+            player = init_player({shoupai:'m123p456s58z11234'});
+            info = [];
+            player.select_fulou({l:2,p:'z1'}, info);
+            assert.equal(info.length, 2);
+
+            player = init_player({shoupai:'m123p456s58z11234'});
+            info = [];
+            player.select_fulou({l:2,p:'z2'}, info);
+            assert.equal(info.length, 0);
+
+            player = init_player({shoupai:'m123p456s78z11223'});
+            info = [];
+            player.select_fulou({l:2,p:'z1'}, info);
+            assert.equal(info.length, 2);
+
+            player = init_player({shoupai:'m123p456s78z11223'});
+            info = [];
+            player.select_fulou({l:2,p:'z2'}, info);
+            assert.equal(info.length, 1);
+        });
     });
 
     suite('select_gang()', ()=>{
@@ -469,6 +513,28 @@ suite('Player', ()=>{
             player.zimo({l:0,p:'z1'})
             assert.equal(player.select_gang(), 'z111=1');
         });
+        test('引継情報域が設定された場合は、暗槓・加槓に関する検討情報を設定する', ()=>{
+            let player, info;
+            player = init_player({shoupai:'m123p459s58z111123'});
+            info = [];
+            player.select_gang(info);
+            assert.ok(info.length);
+
+            player = init_player({shoupai:'m123p459s58z123,z111+'});
+            info = [];
+            player.select_gang(info);
+            assert.ok(info.length);
+
+            player = init_player({shoupai:'m123p456s78z111122'});
+            info = [];
+            player.select_gang(info);
+            assert.ok(info.length);
+
+            player = init_player({shoupai:'m123p456s78z122,z111+'});
+            info = [];
+            player.select_gang(info);
+            assert.ok(info.length);
+        });
     });
 
     suite('select_dapai()', ()=>{
@@ -501,6 +567,11 @@ suite('Player', ()=>{
             const player = init_player({shoupai:'m12p19s19z1234567m1',
                                         baopai:'s3'});
             assert.equal(player.select_dapai(), 'm2*');
+        });
+        test('赤牌を切ってシャンテン戻しする場合もある', ()=>{
+            const player = init_player({shoupai:'m899p789s3078s9,m111=',
+                                        baopai:'m9'});
+            assert.equal(player.select_dapai(), 's0');
         });
         test('副露を考慮した期待値で打牌を選択する', ()=>{
             const player = init_player({shoupai:'m66678p34s3077z77m9',
@@ -539,6 +610,36 @@ suite('Player', ()=>{
             player.dapai({l:3,p:'p5*'});
             assert.equal(player.select_dapai(), 's5*');
         });
+        test('引継情報域が設定された場合は、打牌に関する検討情報を設定する', ()=>{
+            let player, info;
+            player = init_player({shoupai:'m123678p123s13488'});
+            info = [];
+            player.select_dapai(info);
+            assert.ok(info.length);
+
+            player = init_player({shoupai:'m123p1234789s3388'});
+            info = [];
+            player.select_dapai(info);
+            assert.ok(info.length);
+
+            player = init_player({shoupai:'m123p456s258z12345'});
+            player.dapai({l:2,p:'m1*'})
+            info = [];
+            player.select_dapai(info);
+            assert.ok(info.length);
+
+            player = init_player({shoupai:'m123p456s78z111122'});
+            player.dapai({l:2,p:'m1*'})
+            info = [];
+            player.select_gang(info);
+            player.select_dapai(info);
+            assert.ok(info.length);
+
+            player = init_player({shoupai:'m123p789s1199z1122'});
+            info = [];
+            player.select_dapai(info);
+            assert.ok(info.length);
+        });
     });
 
     suite('select_lizhi(p)', ()=>{
@@ -570,8 +671,8 @@ suite('Player', ()=>{
             assert.equal(player.xiangting(player.shoupai), 0);
         });
         test('役牌バックのシャンテン数', ()=>{
-            const player = init_player({shoupai:'p456s789z11333,m123-'});
-            assert.equal(player.xiangting(player.shoupai), 0);
+            const player = init_player({shoupai:'m123p456s789z77,z333-'});
+            assert.equal(player.xiangting(player.shoupai), 1);
         });
         test('喰いタンのシャンテン数', ()=>{
             const player = init_player({shoupai:'m123p456m66777,s6-78'});
@@ -603,8 +704,8 @@ suite('Player', ()=>{
             assert.deepEqual(player.tingpai(player.shoupai), []);
         });
         test('役牌バックの有効牌', ()=>{
-            const player = init_player({shoupai:'p456s789z1133,m123-'});
-            assert.deepEqual(player.tingpai(player.shoupai), ['z1']);
+            const player = init_player({shoupai:'m12p456s789z77,z333-'});
+            assert.deepEqual(player.tingpai(player.shoupai), ['m1','m2','z7+']);
         });
         test('喰いタンの有効牌', ()=>{
             const player = init_player({shoupai:'m23p456m66777,s6-78'});
