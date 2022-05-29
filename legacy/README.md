@@ -1,5 +1,14 @@
 # 過去の思考ルーチン
 
+## 0400
+
+  - Player
+    - select_hule()
+    - select_fulou()
+    - select_gang()
+    - select_dapai()
+      - 検討情報を返す処理を追加
+
 ### 0305
 [麻雀の打牌選択アルゴリズム(9)](https://blog.kobalab.net/entry/20170826/1503705167)
   - Player
