@@ -154,6 +154,11 @@ module.exports = class SuanPai {
         return rv;
     }
 
+    make_paijia() {
+        let paijia = {};
+        return (p)=> paijia[p] ?? (paijia[p] = this.paijia(p));
+    }
+
     suan_weixian(p, l) {
 
         let s = p[0], n = +p[1]||5;

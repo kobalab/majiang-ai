@@ -548,6 +548,11 @@ suite('Player', ()=>{
                                         baopai:'z2'});
             assert.equal(player.select_dapai(), 'm1');
         });
+        test('打牌候補がない場合は一番評価値の低い牌を選択する', ()=>{
+            const player = init_player({shoupai:'m34p22567s234m5,z444=',
+                                        baopai:'z5'});
+            assert.equal(player.select_dapai(), 's2');
+        });
         test('副露を考慮した待ち牌の枚数で打牌を選択する', ()=>{
             const player = init_player({shoupai:'m223057p2479s357p5',
                                         baopai:'z1'});

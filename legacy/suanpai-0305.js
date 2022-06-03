@@ -168,14 +168,16 @@ module.exports = class SuanPai {
             if (m.match(/^z[567]/))  n_sanyuan += 3;
         }
 
-        return (p)=> this.paijia(p)
+        let paijia = {};
+
+        return (p)=> paijia[p] ?? ( paijia[p] = this.paijia(p)
                     * (  p.match(/^z[1234]/) && n_sifeng  >= 9 ? 8
                        : p.match(/^z[567]/)  && n_sanyuan >= 6 ? 8
                        : p[0] == 'z'
                             && Math.max(...['m','p','s'].map(s=>n_suit[s]))
                                       + n_suit.z >= 10         ? 4
                        : n_suit[p[0]] + n_suit.z >= 10         ? 2
-                       :                                         1  );
+                       :                                         1  ) );
     }
 
     suan_weixian(p, l) {

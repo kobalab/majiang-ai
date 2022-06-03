@@ -141,24 +141,23 @@ module.exports = class Player extends Majiang.Player {
             }
         }
 
-        let dapai, max = 0;
+        let dapai, max = -1;
         let n_xiangting = this.xiangting(this.shoupai);
-        for (let p of this.get_dapai(this.shoupai)) {
+        const paijia = this._suanpai.make_paijia();
+        const cmp = (a, b)=> paijia(a) - paijia(b);
+        for (let p of this.get_dapai(this.shoupai).reverse().sort(cmp)) {
             if (! dapai) dapai = p;
             let shoupai = this.shoupai.clone().dapai(p);
             if (this.xiangting(shoupai) > n_xiangting) continue;
 
-            let x = 1 - this._suanpai.paijia(p) / 100;
-            for (let tp of this.tingpai(shoupai)) {
-                x += this._suanpai._paishu[tp[0]][tp[1]]
-                        * (  tp[2] == '+' ? 4
-                           : tp[2] == '-' ? 2
-                           :                1   );
-            }
-            if (x >= max) {
-                max = x;
-                dapai = p;
-            }
+            let ev = this.tingpai(shoupai)
+                        .map(p => this._suanpai._paishu[p[0]][p[1]]
+                                        * (  p[2] == '+' ? 4
+                                           : p[2] == '-' ? 2
+                                           :               1   ) )
+                        .reduce((x, y)=> x + y, 0);
+
+            if (ev > max) { max = ev; dapai = p }
         }
 
         if (anquan) {
