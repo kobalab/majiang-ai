@@ -101,6 +101,7 @@ module.exports = class Player extends Majiang.Player {
         const suan_weixian = (p)=>{
             let weixian = 0;
             for (let l = 0; l < 4; l++) {
+                if (l == this._menfeng) continue;
                 if (! this._model.shoupai[l].lizhi) continue;
                 let w = this._suanpai.suan_weixian(p, l);
                 if (w > weixian) weixian = w;
