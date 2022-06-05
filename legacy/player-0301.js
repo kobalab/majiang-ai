@@ -32,12 +32,12 @@ module.exports = class Player extends Majiang.Player {
         super.qipai(qipai);
     }
     zimo(zimo, gangzimo) {
-        this._eval_cache = {};
+        if (zimo.l == this._menfeng) this._eval_cache = {};
         this._suanpai.zimo(zimo);
         super.zimo(zimo, gangzimo);
     }
     dapai(dapai) {
-        this._eval_cache = {};
+        if (dapai.l != this._menfeng) this._eval_cache = {};
         this._suanpai.dapai(dapai);
         super.dapai(dapai);
     }
