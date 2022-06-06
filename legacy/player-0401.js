@@ -1,14 +1,14 @@
-/*!
- *  @kobalab/majiang-ai v0.4.0
- *
- *  Copyright(C) 2021 Satoshi Kobayashi
- *  Released under the MIT license
- *  https://github.com/kobalab/majiang-ai/blob/master/LICENSE
+/*
+ *  思考ルーチン 0401
+ *    - select_dapai()
+ *      - 安全牌がない場合はオリない
+ *      - 最善手が押せない場合でも次善の手が押せるのならば押す
+ *      - リーチに押す場合シャンテン戻しを選択しない
  */
 "use strict";
 
 const Majiang = require('@kobalab/majiang-core');
-const SuanPai = require('./suanpai');
+const SuanPai = require('./suanpai-0305');
 
 const width = [12, 12*6, 12*6*3];
 
