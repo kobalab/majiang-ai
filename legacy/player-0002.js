@@ -80,21 +80,18 @@ module.exports = class Player extends Majiang.Player {
 
     select_dapai() {
 
-        let dapai, max = 0;
+        let dapai, max = -1;
         let n_xiangting = Majiang.Util.xiangting(this.shoupai);
-        for (let p of this.get_dapai(this.shoupai)) {
+        for (let p of this.get_dapai(this.shoupai).reverse()) {
             if (! dapai) dapai = p;
             let shoupai = this.shoupai.clone().dapai(p);
             if (Majiang.Util.xiangting(shoupai) > n_xiangting) continue;
 
-            let x = 0;
-            for (let tp of Majiang.Util.tingpai(shoupai)) {
-                x += 4 - shoupai._bingpai[tp[0]][tp[1]];
-            }
-            if (x >= max) {
-                max = x;
-                dapai = p;
-            }
+            let ev = Majiang.Util.tingpai(shoupai)
+                        .map(p => 4 - shoupai._bingpai[p[0]][p[1]])
+                        .reduce((x, y)=> x + y, 0);
+
+            if (ev > max) { max = ev; dapai = p }
         }
         if (this.select_lizhi(dapai)) dapai += '*';
         return dapai;

@@ -548,6 +548,11 @@ suite('Player', ()=>{
                                         baopai:'z2'});
             assert.equal(player.select_dapai(), 'm1');
         });
+        test('打牌候補がない場合は一番評価値の低い牌を選択する', ()=>{
+            const player = init_player({shoupai:'m34p22567s234m5,z444=',
+                                        baopai:'z5'});
+            assert.equal(player.select_dapai(), 's2');
+        });
         test('副露を考慮した待ち牌の枚数で打牌を選択する', ()=>{
             const player = init_player({shoupai:'m223057p2479s357p5',
                                         baopai:'z1'});
@@ -600,10 +605,26 @@ suite('Player', ()=>{
             player.dapai({l:3,p:'p5*'});
             assert.equal(player.select_dapai(), 'z4_');
         });
+        test('リーチ者がいて自身が2シャンテンでも安全牌がない場合は押す', ()=>{
+            const player = init_player({shoupai:'m1134p224688s5789'});
+            player.dapai({l:3,p:'s1*'});
+            assert.equal(player.select_dapai(), 's5');
+        });
         test('リーチ者がいて自身が1シャンテンの場合でも無スジは押さない', ()=>{
             const player = init_player({shoupai:'m1123p456s578z1122'});
             player.dapai({l:3,p:'p5*'});
             assert.equal(player.select_dapai(), 'p5');
+        });
+        test('リーチ者がいて自身が1シャンテンならスジで回し打ちする', ()=>{
+            const player = init_player({shoupai:'m11345p340788s367'});
+            player.dapai({l:3,p:'p5*'});
+            assert.equal(player.select_dapai(), 'p8');
+        });
+        test('リーチ者がいる場合はシャンテン戻しを選択しない', ()=>{
+            const player = init_player({shoupai:'m123p1234789s3388',
+                                        baopai:'s3'});
+            player.dapai({l:3,p:'s6*'});
+            assert.equal(player.select_dapai(), 'p1*');
         });
         test('リーチ者がいても自身もテンパイした場合はリーチする', ()=>{
             const player = init_player({shoupai:'m123p456s5789z1122'});

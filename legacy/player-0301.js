@@ -32,12 +32,12 @@ module.exports = class Player extends Majiang.Player {
         super.qipai(qipai);
     }
     zimo(zimo, gangzimo) {
-        this._eval_cache = {};
+        if (zimo.l == this._menfeng) this._eval_cache = {};
         this._suanpai.zimo(zimo);
         super.zimo(zimo, gangzimo);
     }
     dapai(dapai) {
-        this._eval_cache = {};
+        if (dapai.l != this._menfeng) this._eval_cache = {};
         this._suanpai.dapai(dapai);
         super.dapai(dapai);
     }
@@ -154,6 +154,7 @@ module.exports = class Player extends Majiang.Player {
         const suan_weixian = (p)=>{
             let weixian = 0;
             for (let l = 0; l < 4; l++) {
+                if (l == this._menfeng) continue;
                 if (! this._model.shoupai[l].lizhi) continue;
                 let w = this._suanpai.suan_weixian(p, l);
                 if (w > weixian) weixian = w;
@@ -171,22 +172,20 @@ module.exports = class Player extends Majiang.Player {
             }
         }
 
-        let dapai, max = 0;
+        let dapai, max = -1;
         let n_xiangting = Majiang.Util.xiangting(this.shoupai);
         let paishu = this._suanpai.paishu_all();
-        for (let p of this.get_dapai(this.shoupai)) {
+        const paijia = this._suanpai.make_paijia();
+        const cmp = (a, b)=> paijia(a) - paijia(b);
+        for (let p of this.get_dapai(this.shoupai).reverse().sort(cmp)) {
             if (! dapai) dapai = p;
             let shoupai = this.shoupai.clone().dapai(p);
             if (n_xiangting > 2 && this.xiangting(shoupai) > n_xiangting ||
                 Majiang.Util.xiangting(shoupai) > n_xiangting) continue;
 
             let ev = this.eval_shoupai(shoupai, paishu);
-            let x  = 1 - this._suanpai.paijia(p) / 100 + ev;
 
-            if (x >= max) {
-                max = x;
-                dapai = p;
-            }
+            if (ev > max) { max = ev; dapai = p }
         }
 
         if (anquan) {

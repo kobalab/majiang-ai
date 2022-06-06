@@ -131,4 +131,9 @@ module.exports = class SuanPai {
 
         return rv;
     }
+
+    make_paijia() {
+        let paijia = {};
+        return (p)=> paijia[p] ?? (paijia[p] = this.paijia(p));
+    }
 }

@@ -101,6 +101,7 @@ module.exports = class Player extends Majiang.Player {
         const suan_weixian = (p)=>{
             let weixian = 0;
             for (let l = 0; l < 4; l++) {
+                if (l == this._menfeng) continue;
                 if (! this._model.shoupai[l].lizhi) continue;
                 let w = this._suanpai.suan_weixian(p, l);
                 if (w > weixian) weixian = w;
@@ -118,21 +119,20 @@ module.exports = class Player extends Majiang.Player {
             }
         }
 
-        let dapai, max = 0;
+        let dapai, max = -1;
         let n_xiangting = Majiang.Util.xiangting(this.shoupai);
-        for (let p of this.get_dapai(this.shoupai)) {
+        const paijia = this._suanpai.make_paijia();
+        const cmp = (a, b)=> paijia(a) - paijia(b);
+        for (let p of this.get_dapai(this.shoupai).reverse().sort(cmp)) {
             if (! dapai) dapai = p;
             let shoupai = this.shoupai.clone().dapai(p);
             if (Majiang.Util.xiangting(shoupai) > n_xiangting) continue;
 
-            let x = 1 - this._suanpai.paijia(p) / 100;
-            for (let tp of Majiang.Util.tingpai(shoupai)) {
-                x += this._suanpai._paishu[tp[0]][tp[1]];
-            }
-            if (x >= max) {
-                max = x;
-                dapai = p;
-            }
+            let ev = Majiang.Util.tingpai(shoupai)
+                        .map(p => this._suanpai._paishu[p[0]][p[1]])
+                        .reduce((x, y)=> x + y, 0);
+
+            if (ev > max) { max = ev; dapai = p }
         }
 
         if (anquan) {

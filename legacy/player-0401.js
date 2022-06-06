@@ -1,17 +1,14 @@
 /*
- *  思考ルーチン 0302
+ *  思考ルーチン 0401
  *    - select_dapai()
- *      - シャンテン戻しの評価値も計算する
- *    - eval_shoupai()
- *      - シャンテン数に応じて評価値を調整する
- *      - シャンテン戻しの場合、フリテンとなった牌姿の評価値を0とする
- *    - eval_backtrack()
- *      - シャンテン戻しの手牌を評価する
+ *      - 安全牌がない場合はオリない
+ *      - 最善手が押せない場合でも次善の手が押せるのならば押す
+ *      - リーチに押す場合シャンテン戻しを選択しない
  */
 "use strict";
 
 const Majiang = require('@kobalab/majiang-core');
-const SuanPai = require('./suanpai-0301');
+const SuanPai = require('./suanpai-0305');
 
 const width = [12, 12*6, 12*6*3];
 
@@ -103,15 +100,29 @@ module.exports = class Player extends Majiang.Player {
     action_jieju(jieju)   { this._callback() }
 
 
-    select_hule(data, hupai) {
+    select_hule(data, hupai, info) {
 
-        if (! data) return this.allow_hule(this.shoupai, null, hupai);
+        let rongpai;
+        if (data) {
+            if (data.m && data.m.match(/^[mpsz]\d{4}$/)) return false;
+            let d = ['','+','=','-']
+                        [(4 + this._model.lunban - this._menfeng) % 4];
+            rongpai = data.m ? data.m[0] + data.m.substr(-1) + d
+                             : data.p.substr(0,2) + d;
+        }
+        let hule = this.allow_hule(this.shoupai, rongpai, hupai);
 
-        if (data.m && data.m.match(/^[mpsz]\d{4}$/)) return false;
-        let d = ['','+','=','-'][(4 + this._model.lunban - this._menfeng) % 4];
-        let p = data.m ? data.m[0] + data.m.substr(-1) + d
-                       : data.p.substr(0,2) + d;
-        return this.allow_hule(this.shoupai, p, hupai);
+        if (info && hule) {
+            let shoupai = this.shoupai.clone();
+            if (rongpai) shoupai.zimo(rongpai);
+            info.push({
+                m: '', n_xiangting: -1,
+                ev: this.get_defen(this.shoupai, rongpai),
+                shoupai: shoupai.toString()
+            });
+        }
+
+        return hule;
     }
 
     select_pingju() {
@@ -119,40 +130,158 @@ module.exports = class Player extends Majiang.Player {
         return this.allow_pingju(this.shoupai);
     }
 
-    select_fulou(dapai) {
+    select_fulou(dapai, info) {
 
-        let n_xiangting = this.xiangting(this.shoupai);
+        let n_xiangting = Majiang.Util.xiangting(this.shoupai);
         if (this._model.shoupai.find(s=>s.lizhi) && n_xiangting > 1) return;
 
         let d = ['','+','=','-'][(4 + this._model.lunban - this._menfeng) % 4];
         let p = dapai.p.substr(0,2) + d;
 
-        for (let m of this.get_gang_mianzi(this.shoupai, p)) {
-            let shoupai = this.shoupai.clone().fulou(m);
-            if (this.xiangting(shoupai) == n_xiangting) return m;
-        }
+        if (n_xiangting < 3) {
 
-        if (n_xiangting == 0) return;
-        for (let m of this.get_peng_mianzi(this.shoupai, p)
-                        .concat(this.get_chi_mianzi(this.shoupai, p)))
-        {
-            let shoupai = this.shoupai.clone().fulou(m);
-            if (this.xiangting(shoupai) < n_xiangting) return m;
+            let mianzi = this.get_gang_mianzi(this.shoupai, p)
+                            .concat(this.get_peng_mianzi(this.shoupai, p))
+                            .concat(this.get_chi_mianzi(this.shoupai, p));
+            if (! mianzi.length) return;
+
+            let fulou;
+            let paishu = this._suanpai.paishu_all();
+            let max    = this.eval_shoupai(this.shoupai, paishu, '');
+
+            if (info) {
+                info.push({
+                    m: '', n_xiangting: n_xiangting, ev: max,
+                    shoupai: this.shoupai.toString()
+                });
+            }
+
+            for (let m of mianzi) {
+                let shoupai = this.shoupai.clone().fulou(m);
+                let x = Majiang.Util.xiangting(shoupai);
+                if (x >= 3 ||
+                    this._model.shoupai.find(s=>s.lizhi) && x > 0) continue;
+
+                let ev = this.eval_shoupai(shoupai, paishu);
+
+                if (info && ev > 0) {
+                    info.push({
+                        m: m, n_xiangting: x, ev: ev,
+                        shoupai: shoupai.toString()
+                    });
+                }
+
+                if (ev > max) {
+                    max   = ev;
+                    fulou = m;
+                }
+            }
+            return fulou;
+        }
+        else {
+
+            let mianzi = this.get_peng_mianzi(this.shoupai, p)
+                            .concat(this.get_chi_mianzi(this.shoupai, p));
+            if (! mianzi.length) return;
+
+            n_xiangting = this.xiangting(this.shoupai);
+
+            let paishu;
+            if (info) {
+                paishu = this._suanpai.paishu_all();
+                let ev = this.eval_shoupai(this.shoupai, paishu);
+                let n_tingpai = Majiang.Util.tingpai(this.shoupai)
+                                    .map(p => this._suanpai._paishu[p[0]][p[1]])
+                                    .reduce((x, y)=> x + y, 0);
+                info.push({
+                    m: '', n_xiangting: n_xiangting, ev: ev,
+                    n_tingpai: n_tingpai, shoupai: this.shoupai.toString()
+                });
+            }
+
+            for (let m of mianzi) {
+                let shoupai = this.shoupai.clone().fulou(m);
+                let x = this.xiangting(shoupai);
+                if (x >= n_xiangting) continue;
+
+                if (info) {
+                    info.push({
+                        m: m, n_xiangting: x,
+                        shoupai: shoupai.toString()
+                    });
+                }
+
+                return m;
+            }
         }
     }
 
-    select_gang() {
+    select_gang(info) {
 
-        let n_xiangting = this.xiangting(this.shoupai);
+        let n_xiangting = Majiang.Util.xiangting(this.shoupai);
         if (this._model.shoupai.find(s=>s.lizhi) && n_xiangting > 0) return;
 
-        for (let m of this.get_gang_mianzi(this.shoupai)) {
-            let shoupai = this.shoupai.clone().gang(m);
-            if (this.xiangting(shoupai) == n_xiangting) return m;
+        let paishu = this._suanpai.paishu_all();
+
+        if (n_xiangting < 3) {
+
+            let gang, max = this.eval_shoupai(this.shoupai, paishu);
+            for (let m of this.get_gang_mianzi(this.shoupai)) {
+                let shoupai = this.shoupai.clone().gang(m);
+                if (Majiang.Util.xiangting(shoupai) >= 3) continue;
+
+                let ev = this.eval_shoupai(shoupai, paishu);
+
+                if (info) {
+                    let p = m.match(/\d{4}$/) ? m.substr(0,2)
+                                              : m[0] + m.substr(-1);
+                    let tingpai = Majiang.Util.tingpai(shoupai);
+                    let n_tingpai = tingpai
+                                    .map(p => this._suanpai._paishu[p[0]][p[1]])
+                                    .reduce((x, y)=> x + y, 0);
+                    info.push({
+                        p: p, m: m, n_xiangting: n_xiangting, ev: ev,
+                        tingpai: tingpai, n_tingpai: n_tingpai,
+                    });
+                }
+
+                if (ev >= max) {
+                    gang = m;
+                    max  = ev;
+                }
+            }
+            return gang;
+        }
+        else {
+
+            n_xiangting = this.xiangting(this.shoupai);
+
+            for (let m of this.get_gang_mianzi(this.shoupai)) {
+                let shoupai = this.shoupai.clone().gang(m);
+                if (this.xiangting(shoupai) == n_xiangting) {
+
+                    if (info) {
+                        let p = m.match(/\d{4}$/) ? m.substr(0,2)
+                                                  : m[0] + m.substr(-1);
+                        let ev = this.eval_shoupai(shoupai, paishu);
+                        let tingpai = Majiang.Util.tingpai(shoupai);
+                        let n_tingpai = tingpai
+                                        .map(p =>
+                                             this._suanpai._paishu[p[0]][p[1]])
+                                        .reduce((x, y)=> x + y, 0);
+                        info.push({
+                            p: p, m: m, n_xiangting: n_xiangting, ev: ev,
+                            tingpai: tingpai, n_tingpai: n_tingpai,
+                        });
+                    }
+
+                    return m;
+                }
+            }
         }
     }
 
-    select_dapai() {
+    select_dapai(info) {
 
         const suan_weixian = (p)=>{
             let weixian = 0;
@@ -165,20 +294,22 @@ module.exports = class Player extends Majiang.Player {
             return weixian;
         };
         let anquan, min = Infinity;
+        let weixian;
         if (this._model.shoupai.find(s=>s.lizhi)) {
+            weixian = {};
             for (let p of this.get_dapai(this.shoupai)) {
-                let weixian = suan_weixian(p);
-                if (weixian < min) {
-                    min = weixian;
+                weixian[p] = suan_weixian(p);
+                if (weixian[p] < min) {
+                    min = weixian[p];
                     anquan = p;
                 }
             }
         }
 
-        let dapai, max = -1, min_tingpai = 0, backtrack = [];
+        let dapai = anquan, max = -1, min_tingpai = 0, backtrack = [];
         let n_xiangting = Majiang.Util.xiangting(this.shoupai);
         let paishu = this._suanpai.paishu_all();
-        const paijia = this._suanpai.make_paijia();
+        const paijia = this._suanpai.make_paijia(this.shoupai);
         const cmp = (a, b)=> paijia(a) - paijia(b);
         for (let p of this.get_dapai(this.shoupai).reverse().sort(cmp)) {
             if (! dapai) dapai = p;
@@ -186,15 +317,33 @@ module.exports = class Player extends Majiang.Player {
             if (n_xiangting > 2 && this.xiangting(shoupai) > n_xiangting ||
                 Majiang.Util.xiangting(shoupai) > n_xiangting)
             {
+                if (anquan) continue;
                 if (n_xiangting < 2) backtrack.push(p);
                 continue;
             }
 
             let ev = this.eval_shoupai(shoupai, paishu);
 
-            let n_tingpai = Majiang.Util.tingpai(shoupai)
-                                .map(p => this._suanpai._paishu[p[0]][p[1]])
-                                .reduce((x, y)=> x + y, 0);
+            let tingpai = Majiang.Util.tingpai(shoupai);
+            let n_tingpai = tingpai.map(p => this._suanpai._paishu[p[0]][p[1]])
+                                   .reduce((x, y)=> x + y, 0);
+
+            if (info) {
+                info.map(i =>{ if (i.p == p.substr(0,2) && i.m)
+                                    i.weixian = suan_weixian(p) });
+                if (! info.find(i => i.p == p.substr(0,2) && ! i.m)) {
+                    info.push({
+                        p: p.substr(0,2), n_xiangting: n_xiangting, ev: ev,
+                        tingpai: tingpai, n_tingpai: n_tingpai,
+                        weixian: suan_weixian(p)
+                    });
+                }
+            }
+
+            if (min < 6) {
+                if (n_xiangting >= 2 && weixian[p] > min) continue;
+                if (n_xiangting == 1 && weixian[p] >   5) continue;
+            }
 
             if (ev - max > 0.0000001) {
                 max         = ev;
@@ -206,13 +355,23 @@ module.exports = class Player extends Majiang.Player {
 
         for (let p of backtrack) {
             let shoupai = this.shoupai.clone().dapai(p);
-            let n_tingpai = Majiang.Util.tingpai(shoupai)
-                                .map(p => this._suanpai._paishu[p[0]][p[1]])
-                                .reduce((x, y)=> x + y, 0);
+            let tingpai = Majiang.Util.tingpai(shoupai);
+            let n_tingpai = tingpai.map(p => this._suanpai._paishu[p[0]][p[1]])
+                                   .reduce((x, y)=> x + y, 0);
             if (n_tingpai < min_tingpai) continue;
 
             let back = p[0] + (+p[1]||5);
             let ev = this.eval_backtrack(shoupai, paishu, back, tmp_max * 2);
+
+            if (info && ev > 0) {
+                if (! info.find(i => i.p == p.substr(0,2) && ! i.m)) {
+                    info.push({
+                        p: p.substr(0,2), n_xiangting: n_xiangting + 1, ev: ev,
+                        tingpai: tingpai, n_tingpai: n_tingpai,
+                        weixian: suan_weixian(p)
+                    });
+                }
+            }
 
             if (ev - max > 0.0000001) {
                 max   = ev;
@@ -221,8 +380,17 @@ module.exports = class Player extends Majiang.Player {
         }
 
         if (anquan) {
-            if (n_xiangting > 1 ||
-                n_xiangting == 1 && suan_weixian(dapai) > 5)  dapai = anquan;
+
+            if (info && dapai == anquan
+                && ! info.find(i=> i.p == anquan.substr(0,2)))
+            {
+                info.push({
+                    p: anquan.substr(0,2),
+                    n_xiangting: Majiang.Util.xiangting(
+                                        this.shoupai.clone().dapai(anquan)),
+                    weixian: suan_weixian(anquan)
+                });
+            }
         }
 
         if (this.select_lizhi(dapai)) dapai += '*';
@@ -369,7 +537,7 @@ module.exports = class Player extends Majiang.Player {
 
     eval_shoupai(shoupai, paishu, back) {
 
-        let paistr = shoupai.toString() + (back ? `:${back}` : '');
+        let paistr = shoupai.toString() + (back != null ? `:${back}` : '');
         if (this._eval_cache[paistr] != null) return this._eval_cache[paistr];
 
         let rv = 0;
@@ -396,6 +564,10 @@ module.exports = class Player extends Majiang.Player {
                 paishu[p]--;
 
                 let ev = this.eval_shoupai(new_shoupai, paishu, back);
+                if (! back) {
+                    if (n_xiangting > 0)
+                        ev += this.eval_fulou(shoupai, p, paishu, back);
+                }
 
                 paishu[p]++;
                 rv += ev * paishu[p];
@@ -434,5 +606,33 @@ module.exports = class Player extends Majiang.Player {
             if (ev > min) rv += ev * paishu[p];
         }
         return rv / width[n_xiangting];
+    }
+
+    eval_fulou(shoupai, p, paishu, back) {
+
+        const get_peng_mianzi = (shoupai, p) =>
+                    Majiang.Game.get_peng_mianzi(this._rule, shoupai, p);
+        const get_chi_mianzi  = (shoupai, p) =>
+                    Majiang.Game.get_chi_mianzi(this._rule, shoupai, p);
+
+        let n_xiangting = Majiang.Util.xiangting(shoupai);
+
+        let peng_max = 0;
+        for (let m of get_peng_mianzi(shoupai, p+'+')) {
+            let new_shoupai = shoupai.clone().fulou(m);
+            if (Majiang.Util.xiangting(new_shoupai) >= n_xiangting) continue;
+            peng_max = Math.max(this.eval_shoupai(new_shoupai, paishu, back),
+                                peng_max);
+        }
+
+        let chi_max = 0;
+        for (let m of get_chi_mianzi(shoupai, p+'-')) {
+            let new_shoupai = shoupai.clone().fulou(m);
+            if (Majiang.Util.xiangting(new_shoupai) >= n_xiangting) continue;
+            chi_max  = Math.max(this.eval_shoupai(new_shoupai, paishu, back),
+                                chi_max);
+        }
+
+        return peng_max > chi_max ? peng_max * 3 : peng_max * 2 + chi_max;
     }
 }
