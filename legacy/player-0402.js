@@ -1,14 +1,13 @@
-/*!
- *  @kobalab/majiang-ai v0.4.1
- *
- *  Copyright(C) 2021 Satoshi Kobayashi
- *  Released under the MIT license
- *  https://github.com/kobalab/majiang-ai/blob/master/LICENSE
+/*
+ *  思考ルーチン 0402
+ *    - select_dapai()
+ *      - 評価値を元に愚形、好形、超好形を判断し、愚形はベタオリ、好形はスジ押し、
+ *        超好形は全押しとする
  */
 "use strict";
 
 const Majiang = require('@kobalab/majiang-core');
-const SuanPai = require('./suanpai');
+const SuanPai = require('./suanpai-0305');
 
 const width = [12, 12*6, 12*6*3];
 
