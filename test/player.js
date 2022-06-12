@@ -595,30 +595,39 @@ suite('Player', ()=>{
             const player = init_player({shoupai:'m125p2469s1z66z7,z555='});
             assert.notEqual(player.select_dapai(), 'z7_');
         });
-        test('リーチ者がいて自身が2シャンテン以上の場合はオリる', ()=>{
-            const player = init_player({shoupai:'m23p456s578z112234'});
-            player.dapai({l:3,p:'p5*'});
-            assert.equal(player.select_dapai(), 'p5');
-        });
-        test('リーチ者がいて自身が1シャンテンの場合は無スジ以外は押す', ()=>{
-            const player = init_player({shoupai:'m123p456s578z11224'});
-            player.dapai({l:3,p:'p5*'});
-            assert.equal(player.select_dapai(), 'z4_');
-        });
         test('リーチ者がいて自身が2シャンテンでも安全牌がない場合は押す', ()=>{
             const player = init_player({shoupai:'m1134p224688s5789'});
             player.dapai({l:3,p:'s1*'});
             assert.equal(player.select_dapai(), 's5');
         });
-        test('リーチ者がいて自身が1シャンテンの場合でも無スジは押さない', ()=>{
-            const player = init_player({shoupai:'m1123p456s578z1122'});
-            player.dapai({l:3,p:'p5*'});
-            assert.equal(player.select_dapai(), 'p5');
+        test('リーチ者がいて自身が3シャンテン以前ならベタオリする', ()=>{
+            const player = init_player({shoupai:'m123p456s258z1234z1'});
+            player.dapai({l:3,p:'m1*'});
+            assert.equal(player.select_dapai(), 'm1');
         });
-        test('リーチ者がいて自身が1シャンテンならスジで回し打ちする', ()=>{
-            const player = init_player({shoupai:'m11345p340788s367'});
-            player.dapai({l:3,p:'p5*'});
-            assert.equal(player.select_dapai(), 'p8');
+        test('リーチ者がいて自身が超好形1シャンテンなら無スジでも押す', ()=>{
+            const player = init_player({shoupai:'m111340p23478s78m8',
+                                        menfeng:1,baopai:'z1'});
+            player.dapai({l:3,p:'p4*'});
+            assert.equal(player.select_dapai(), 'm8_');
+        });
+        test('リーチ者がいて自身が好形1シャンテンならスジは押す', ()=>{
+            const player = init_player({shoupai:'m11222p23478s579m8',
+                                        baopai:'z1'});
+            player.dapai({l:3,p:'m5*'});
+            assert.equal(player.select_dapai(), 'm8_');
+        });
+        test('リーチ者がいて自身が好形1シャンテンでも無スジは押さない', ()=>{
+            const player = init_player({shoupai:'m11222p23478s579m8',
+                                        baopai:'z1'});
+            player.dapai({l:3,p:'s5*'});
+            assert.equal(player.select_dapai(), 's5');
+        });
+        test('リーチ者がいて自身が愚形1シャンテンならベタオリする', ()=>{
+            const player = init_player({shoupai:'m11222p23478s378m8',
+                                        menfeng:1,baopai:'z1'});
+            player.dapai({l:3,p:'p4*'});
+            assert.equal(player.select_dapai(), 'p4');
         });
         test('リーチ者がいる場合はシャンテン戻しを選択しない', ()=>{
             const player = init_player({shoupai:'m123p1234789s3388',
