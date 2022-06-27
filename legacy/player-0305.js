@@ -140,7 +140,7 @@ module.exports = class Player extends Majiang.Player {
 
                 let ev = this.eval_shoupai(shoupai, paishu);
 
-                if (ev > max) {
+                if (ev - max > 0.0000001) {
                     max   = ev;
                     fulou = m;
                 }
@@ -173,7 +173,8 @@ module.exports = class Player extends Majiang.Player {
                 let shoupai = this.shoupai.clone().gang(m);
                 if (Majiang.Util.xiangting(shoupai) >= 3) continue;
 
-                if (this.eval_shoupai(shoupai, paishu) >= ev) return m;
+                if (this.eval_shoupai(shoupai, paishu) - ev > -0.0000001)
+                                                            return m;
             }
         }
         else {

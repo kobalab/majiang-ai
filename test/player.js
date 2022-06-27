@@ -441,7 +441,7 @@ suite('Player', ()=>{
             player.dapai({l:2,p:'z2'});
             assert.ok(! player.select_fulou({l:2,p:'z2'}));
         });
-        test('リーチ者がいる場合、2シャンテン以前で副露しない', ()=>{
+        test('リーチ者がいる場合、3シャンテンから副露しない', ()=>{
             const player = init_player({shoupai:'m123p456s58z11234'});
             player.dapai({l:2,p:'z1*'});
             assert.ok(! player.select_fulou({l:2,p:'z1'}));
@@ -450,6 +450,23 @@ suite('Player', ()=>{
             const player = init_player({shoupai:'m56778p4s24789z55'});
             player.dapai({l:2,p:'z5*'});
             assert.ok(! player.select_fulou({l:2,p:'z5*'}));
+        });
+        test('リーチ者がいる場合でも、超好形の1シャンテンとなる副露はする', ()=>{
+            const player = init_player({shoupai:'m11p235s788z22277',menfeng:1});
+            player.dapai({l:2,p:'z7*'});
+            assert.equal(player.select_fulou({l:2,p:'z7*'}), 'z777+');
+        });
+        test('リーチ者がいる場合でも、テンパイとなる副露はする', ()=>{
+            const player = init_player({shoupai:'m1135p678s788,z777=',
+                                        menfeng:1});
+            player.dapai({l:0,p:'m4*'});
+            assert.ok(player.select_fulou({l:0,p:'m4*'}), 'm34-5');
+        });
+        test('リーチ者がいる場合、評価値500未満の副露テンパイにはとらない', ()=>{
+            const player = init_player({shoupai:'m1135p678s788,z777=',
+                                        menfeng:1});
+            player.dapai({l:0,p:'s9*'});
+            assert.ok(! player.select_fulou({l:0,p:'s9*'}));
         });
         test('引継情報域が設定された場合は、副露に関する検討情報を設定する', ()=>{
             let player, info;
@@ -635,10 +652,26 @@ suite('Player', ()=>{
             player.dapai({l:3,p:'s6*'});
             assert.equal(player.select_dapai(), 'p1*');
         });
+        test('リーチ者がいて自身がテンパイしていても評価値200未満で無スジは押さない', ()=>{
+            const player = init_player({shoupai:'m22345p1234s79,z777+',
+                                        menfeng:1,baopai:'z1'});
+            player.dapai({l:0,p:'s8'})
+            player.fulou({l:2,m:'s888='})
+            player.dapai({l:3,p:'s7*'});
+            assert.equal(player.select_dapai(), 's7');
+        });
         test('リーチ者がいても自身もテンパイした場合はリーチする', ()=>{
             const player = init_player({shoupai:'m123p456s5789z1122'});
             player.dapai({l:3,p:'p5*'});
             assert.equal(player.select_dapai(), 's5*');
+        });
+        test('リーチ者がいて自身がテンパイしても評価値200未満ならリーチしない', ()=>{
+            const player = init_player({shoupai:'m22345p123678s79z1',
+                                        menfeng:1,baopai:'z1'});
+            player.dapai({l:0,p:'s8'})
+            player.fulou({l:2,m:'s888='})
+            player.dapai({l:3,p:'p5*'});
+            assert.equal(player.select_dapai(), 'z1_');
         });
         test('引継情報域が設定された場合は、打牌に関する検討情報を設定する', ()=>{
             let player, info;

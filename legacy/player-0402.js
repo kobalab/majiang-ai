@@ -170,7 +170,7 @@ module.exports = class Player extends Majiang.Player {
                     });
                 }
 
-                if (ev > max) {
+                if (ev - max > 0.0000001) {
                     max   = ev;
                     fulou = m;
                 }
@@ -244,7 +244,7 @@ module.exports = class Player extends Majiang.Player {
                     });
                 }
 
-                if (ev >= max) {
+                if (ev - max > -0.0000001) {
                     gang = m;
                     max  = ev;
                 }
