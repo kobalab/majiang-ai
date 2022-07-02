@@ -1,5 +1,14 @@
 # 過去の思考ルーチン
 
+### 0501
+[牌の危険度計算アルゴリズム(1)](https://blog.kobalab.net/entry/2021/01/22/204805)
+  - Player
+    - select_dapai()
+      - 両面の可能性が残っている牌を危険牌と判定するよう変更
+  - SuanPai
+    - suan_weixian()
+      - カベを考慮した危険度計算方法に変更
+
 ## 0403
 [押し引きアルゴリズムの改善(3)](https://blog.kobalab.net/entry/2021/01/02/163535)
   - Player
