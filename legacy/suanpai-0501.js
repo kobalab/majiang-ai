@@ -1,5 +1,5 @@
 /*
- *  SuanPai 0305
+ *  SuanPai 0501
  *    - suan_weixian()
  *      - カベを考慮した危険度計算方法に変更
  */
