@@ -1,14 +1,12 @@
-/*!
- *  @kobalab/majiang-ai v0.5.2
- *
- *  Copyright(C) 2021 Satoshi Kobayashi
- *  Released under the MIT license
- *  https://github.com/kobalab/majiang-ai/blob/master/LICENSE
+/*
+ *  思考ルーチン 0502
+ *    - select_dapai()
+ *      - 常に自身の手牌に「ある」で危険度を計算するよう修正
  */
 "use strict";
 
 const Majiang = require('@kobalab/majiang-core');
-const SuanPai = require('./suanpai');
+const SuanPai = require('./suanpai-0502');
 
 const width = [12, 12*6, 12*6*3];
 

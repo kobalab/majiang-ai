@@ -1,5 +1,10 @@
 /*
- *  SuanPai
+ *  SuanPai 0502
+ *    - suan_weixian()
+ *      - 自分の手牌にあるか否をパラメータで指定するよう変更
+ *      - 字牌生牌の絶対危険度を 3 → 8 に変更
+ *    - suan_weixian_all()
+ *      - 牌の相対危険度を計算する
  */
 "use strict";
 

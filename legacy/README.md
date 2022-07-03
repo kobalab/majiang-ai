@@ -1,5 +1,17 @@
 # 過去の思考ルーチン
 
+### 0502
+[牌の危険度計算アルゴリズム(2)](https://blog.kobalab.net/entry/2021/10/28/232300)
+  - Player
+    - select_dapai()
+      - 常に自身の手牌に「ある」で危険度を計算するよう修正
+  - SuanPai
+    - suan_weixian()
+      - 自分の手牌にあるか否をパラメータで指定するよう変更
+      - 字牌生牌の絶対危険度を 3 → 8 に変更
+    - suan_weixian_all()
+      - 牌の相対危険度を計算する
+
 ### 0501
 [牌の危険度計算アルゴリズム(1)](https://blog.kobalab.net/entry/2021/01/22/204805)
   - Player

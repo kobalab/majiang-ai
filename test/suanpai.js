@@ -216,30 +216,40 @@ suite('SuanPai', ()=>{
         });
     });
 
-    suite('suan_weixian(p, l)', ()=>{
+    suite('suan_weixian(p, l, c)', ()=>{
         let suanpai = new SuanPai({m:1,p:1,s:1});
         test('現物: 0', ()=>{
             suanpai.dapai({l:1,p:'z1'});
             assert.equal(suanpai.suan_weixian('z1', 1), 0);
         })
-        test('字牌 生牌: 3', ()=>{
-            assert.equal(suanpai.suan_weixian('z2', 1), 3);
+        test('字牌 生牌: 8', ()=>{
+            assert.equal(suanpai.suan_weixian('z2', 1), 8);
+            suanpai.zimo({l:0,p:'z3'});
+            assert.equal(suanpai.suan_weixian('z3', 1, 1), 8);
         });
         test('字牌 1枚見え: 3', ()=>{
             suanpai.dapai({l:2,p:'z2'});
             assert.equal(suanpai.suan_weixian('z2', 1), 3);
+            suanpai.dapai({l:3,p:'z3'});
+            assert.equal(suanpai.suan_weixian('z3', 1, 1), 3);
         });
-        test('字牌 2枚見え: 3', ()=>{
-            suanpai.dapai({l:2,p:'z2'});
-            assert.equal(suanpai.suan_weixian('z2', 1), 3);
-        });
-        test('字牌 ラス牌: 1', ()=>{
+        test('字牌 2枚見え: 1', ()=>{
             suanpai.dapai({l:2,p:'z2'});
             assert.equal(suanpai.suan_weixian('z2', 1), 1);
+            suanpai.dapai({l:3,p:'z3'});
+            assert.equal(suanpai.suan_weixian('z3', 1, 1), 1);
+        });
+        test('字牌 ラス牌: 0', ()=>{
+            suanpai.dapai({l:2,p:'z2'});
+            assert.equal(suanpai.suan_weixian('z2', 1), 0);
+            suanpai.dapai({l:3,p:'z3'});
+            assert.equal(suanpai.suan_weixian('z3', 1, 1), 0);
         });
         test('字牌 なし: 0', ()=>{
             suanpai.dapai({l:2,p:'z2'});
             assert.equal(suanpai.suan_weixian('z2', 1), 0);
+            suanpai.dapai({l:0,p:'z3'});
+            assert.equal(suanpai.suan_weixian('z3', 1, 1), 0);
         });
         test('数牌 無スジ(一九牌): 13', ()=>{
             assert.equal(suanpai.suan_weixian('m1', 1), 13);
@@ -306,17 +316,47 @@ suite('SuanPai', ()=>{
             suanpai.dapai({l:2,p:'s1'});
             assert.equal(suanpai.suan_weixian('s1', 1), 3);
         });
-        test('数牌 二のカベ 2枚見え: 3', ()=>{
-            suanpai.dapai({l:2,p:'s1'});
-            assert.equal(suanpai.suan_weixian('s1', 1), 3);
-        });
-        test('数牌 二のカベ ラス牌: 1', ()=>{
+        test('数牌 二のカベ 2枚見え: 1', ()=>{
             suanpai.dapai({l:2,p:'s1'});
             assert.equal(suanpai.suan_weixian('s1', 1), 1);
+        });
+        test('数牌 二のカベ ラス牌: 0', ()=>{
+            suanpai.dapai({l:2,p:'s1'});
+            assert.equal(suanpai.suan_weixian('s1', 1), 0);
         });
         test('数牌 二のカベ なし: 0', ()=>{
             suanpai.dapai({l:2,p:'s1'});
             assert.equal(suanpai.suan_weixian('s1', 1), 0);
+        });
+    });
+
+    suite('suan_weixian_all(bingpai)', ()=>{
+        let paistr = 'm4579p478s6z14457';
+        let suanpai = init_suanpai({shoupai:paistr,baopai:'p7',menfeng:3});
+        let shoupai = Majiang.Shoupai.fromString(paistr);
+        test('リーチなし', ()=>{
+            assert.ifError(suanpai.suan_weixian_all(shoupai._bingpai));
+        });
+        test('リーチあり', ()=>{
+            suanpai.dapai({l:1,p:'m3*'});
+            const weixian = suanpai.suan_weixian_all(shoupai._bingpai);
+            assert.equal(weixian('m0'), 26 / 544 * 100);
+        });
+        test('2人リーチ', ()=>{
+            suanpai.dapai({l:0,p:'p3*'});
+            const weixian = suanpai.suan_weixian_all(shoupai._bingpai);
+            assert.equal(weixian('m0'), Math.max(26 / 515 * 100,
+                                                 26 / 544 * 100))
+        });
+        test('全ての牌が安全', ()=>{
+            let i = 0;
+            for (let s of ['m','p','s','z']) {
+                for (let n = 1; n <= (s == 'z' ? 7 : 9); n++) {
+                    suanpai.dapai({ l: i++ % 4, p: s+n });
+                }
+            }
+            const weixian = suanpai.suan_weixian_all(shoupai._bingpai);
+            assert.equal(weixian('m0'), 0);
         });
     });
 });
