@@ -345,8 +345,8 @@ module.exports = class Player extends Majiang.Player {
             if (min < 10) {
                 if (n_xiangting  > 2 &&              weixian[p] > min) continue;
                 if (n_xiangting  > 0 && ev <  300 && weixian[p] > min) continue;
-                if (n_xiangting  > 0 && ev < 1200 && weixian[p] >  10) continue;
-                if (n_xiangting == 0 && ev <  200 && weixian[p] >  10) continue;
+                if (n_xiangting  > 0 && ev < 1200 && weixian[p] >= 10) continue;
+                if (n_xiangting == 0 && ev <  200 && weixian[p] >= 10) continue;
             }
 
             if (ev - max > 0.0000001) {
