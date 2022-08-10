@@ -31,6 +31,12 @@ function init_player(param = {}) {
     return player;
 }
 
+function set_dapai(player, l, dapai) {
+    for (let p of dapai) {
+        player._suanpai.dapai({l:l,p:p});
+    }
+}
+
 suite('Player', ()=>{
 
     test('モジュールが存在すること', ()=> assert.ok(Player));
@@ -612,57 +618,55 @@ suite('Player', ()=>{
             const player = init_player({shoupai:'m125p2469s1z66z7,z555='});
             assert.notEqual(player.select_dapai(), 'z7_');
         });
-        test('リーチ者がいて自身が2シャンテンでも安全牌がない場合は押す', ()=>{
-            const player = init_player({shoupai:'m1134p224688s5789'});
-            player.dapai({l:3,p:'s1*'});
-            assert.equal(player.select_dapai(), 's5');
-        });
-        test('リーチ者がいて自身が3シャンテン以前ならベタオリする', ()=>{
-            const player = init_player({shoupai:'m123p456s258z1234z1'});
-            player.dapai({l:3,p:'m1*'});
-            assert.equal(player.select_dapai(), 'm1');
-        });
-        test('リーチ者がいて自身が超好形1シャンテンなら無スジでも押す', ()=>{
-            const player = init_player({shoupai:'m111340p23478s78m8',
-                                        menfeng:1,baopai:'z1'});
-            player.dapai({l:3,p:'p4*'});
-            assert.equal(player.select_dapai(), 'm8_');
-        });
-        test('リーチ者がいて自身が好形1シャンテンならスジは押す', ()=>{
-            const player = init_player({shoupai:'m11222p23478s579m8',
-                                        baopai:'z1'});
-            player.dapai({l:3,p:'m5*'});
-            assert.equal(player.select_dapai(), 'm8_');
-        });
-        test('リーチ者がいて自身が好形1シャンテンでも無スジは押さない', ()=>{
-            const player = init_player({shoupai:'m11222p23478s579m8',
-                                        baopai:'z1'});
-            player.dapai({l:3,p:'s5*'});
-            assert.equal(player.select_dapai(), 's5');
-        });
-        test('リーチ者がいて自身が愚形1シャンテンならベタオリする', ()=>{
-            const player = init_player({shoupai:'m11222p23478s378m8',
-                                        menfeng:1,baopai:'z1'});
-            player.dapai({l:3,p:'p4*'});
-            assert.equal(player.select_dapai(), 'p4');
-        });
         test('リーチ者がいる場合はシャンテン戻しを選択しない', ()=>{
-            const player = init_player({shoupai:'m123p1234789s3388',
-                                        baopai:'s3'});
-            player.dapai({l:3,p:'s6*'});
+            const player = init_player({shoupai:'m123p1234789s3388'});
+            set_dapai(player, 2, ['s6*']);
             assert.equal(player.select_dapai(), 'p1*');
         });
-        test('リーチ者がいて自身がテンパイしていても評価値200未満で無スジは押さない', ()=>{
-            const player = init_player({shoupai:'m22345p1234s79,z777+',
-                                        menfeng:1,baopai:'z1'});
-            player.dapai({l:0,p:'s8'})
-            player.fulou({l:2,m:'s888='})
-            player.dapai({l:3,p:'s7*'});
-            assert.equal(player.select_dapai(), 's7');
+        test('3シャンテン、安全牌あり → ベタオリ', ()=>{
+            const player = init_player({shoupai:'m2367p3566s33588s7'});
+            set_dapai(player, 2, ['s8*']);
+            assert.equal(player.select_dapai(), 's8');
+        });
+        test('愚形1シャンテン、安全牌なし → 押し', ()=>{
+            const player = init_player({shoupai:'s2357s8,z777=,m123-,p456-',
+                                        menfeng:1,baopai:'z2'});
+            set_dapai(player, 2, ['m4','m5','m6','p4','p5','p6*']);
+            assert.equal(player.select_dapai(), 's8_');
+        });
+        test('好形2シャンテン、安全牌あり → 回し打ち', ()=>{
+            const player = init_player({shoupai:'m23344p2346s2355p8'});
+            set_dapai(player, 2, ['s8*']);
+            assert.equal(player.select_dapai(), 'p8_');
+        });
+        test('好形1シャンテン、安全牌なし → 押し', ()=>{
+            const player = init_player({shoupai:'s2357s8,z777=,m123-,p406-',
+                                        baopai:'z2'});
+            set_dapai(player, 2, ['m4','m5','m6','p4','p5','p6*']);
+            assert.equal(player.select_dapai(), 's8_');
+        });
+        test('超好形1シャンテン → 全押し', ()=>{
+            const player = init_player({shoupai:'s2357s8,z777=,m123-,p456-',
+                                        baopai:'z6'});
+            set_dapai(player, 2, ['m4','m5','m6','p4','p5','p6','s3','s4',
+                                  's6*']);
+            assert.equal(player.select_dapai(), 's8_');
+        });
+        test('テンパイ → 全押し', ()=>{
+            const player = init_player({shoupai:'s1234s6,z777=,m123-,p456-'});
+            set_dapai(player, 2, ['m4','m5','m6','p4','p5','p6','s5','s7',
+                                  'z1','z2','z3','z4*']);
+            assert.equal(player.select_dapai(), 's1');
+        });
+        test('形式テンパイ → 回し打ち', ()=>{
+            const player = init_player({shoupai:'s2345s6,z444=,m123-,p456-'});
+            set_dapai(player, 2, ['m4','m5','m6','p4','p5','p6','s7','s8',
+                                  'z1','z2','z3','z4*']);
+            assert.equal(player.select_dapai(), 's2');
         });
         test('リーチ者がいても自身もテンパイした場合はリーチする', ()=>{
             const player = init_player({shoupai:'m123p456s5789z1122'});
-            player.dapai({l:3,p:'p5*'});
+            set_dapai(player, 2, ['p5*']);
             assert.equal(player.select_dapai(), 's5*');
         });
         test('リーチ者がいて自身がテンパイしても評価値200未満ならリーチしない', ()=>{

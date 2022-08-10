@@ -1,14 +1,15 @@
-/*!
- *  @kobalab/majiang-ai v0.5.2
- *
- *  Copyright(C) 2021 Satoshi Kobayashi
- *  Released under the MIT license
- *  https://github.com/kobalab/majiang-ai/blob/master/LICENSE
+/*
+ *  思考ルーチン 0503
+ *    - select_dapai()
+ *      - 牌の相対危険度 13.5 以上の牌は切らない
+ *      - 超好形でなければ相対危険度 8.0 以上の牌は切らない
+ *      - 愚形で相対危険度 3.0 未満の牌がある場合はベタオリする
+ *      - 好形で相対危険度 3.0 未満の牌がある場合は相対危険度 3.0 以上の牌は切らない
  */
 "use strict";
 
 const Majiang = require('@kobalab/majiang-core');
-const SuanPai = require('./suanpai');
+const SuanPai = require('./suanpai-0502');
 
 const width = [12, 12*6, 12*6*3];
 
