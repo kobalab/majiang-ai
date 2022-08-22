@@ -1,14 +1,10 @@
-/*!
- *  @kobalab/majiang-ai v0.6.0
- *
- *  Copyright(C) 2021 Satoshi Kobayashi
- *  Released under the MIT license
- *  https://github.com/kobalab/majiang-ai/blob/master/LICENSE
+/*
+ *  思考ルーチン 0504
  */
 "use strict";
 
 const Majiang = require('@kobalab/majiang-core');
-const SuanPai = require('./suanpai');
+const SuanPai = require('./suanpai-0504');
 
 const width = [12, 12*6, 12*6*3];
 

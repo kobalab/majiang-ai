@@ -346,7 +346,7 @@ suite('SuanPai', ()=>{
             suanpai.dapai({l:0,p:'p3*'});
             const weixian = suanpai.suan_weixian_all(shoupai._bingpai);
             assert.equal(weixian('m0'), Math.max(26 / 515 * 100,
-                                                 26 / 544 * 100))
+                                                 26 / 544 * 100 * 1.40))
         });
         test('全ての牌が安全', ()=>{
             let i = 0;

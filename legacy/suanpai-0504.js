@@ -1,5 +1,7 @@
 /*
- *  SuanPai
+ *  SuanPai 0504
+ *    - suan_weixian_all()
+ *      - 親リーチの危険度を 1.4 倍に評価する
  */
 "use strict";
 
