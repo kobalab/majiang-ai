@@ -1,5 +1,11 @@
 # 過去の思考ルーチン
 
+## 0504
+[牌の危険度計算アルゴリズム(4)](https://blog.kobalab.net/entry/2021/11/22/071442)
+  - SuanPai
+    - suan_weixian_all()
+      - 親リーチの危険度を 1.4 倍に評価する
+
 ### 0503
 [牌の危険度計算アルゴリズム(3)](https://blog.kobalab.net/entry/2021/11/15/080258)
   - Player
