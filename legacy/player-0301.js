@@ -279,11 +279,6 @@ module.exports = class Player extends Majiang.Player {
 
     tingpai(shoupai) {
 
-        const get_peng_mianzi = (shoupai, p) =>
-                    Majiang.Game.get_peng_mianzi(this._rule, shoupai, p);
-        const get_chi_mianzi  = (shoupai, p) =>
-                    Majiang.Game.get_chi_mianzi(this._rule, shoupai, p);
-
         let n_xiangting = this.xiangting(shoupai);
 
         let pai = [];
@@ -291,7 +286,7 @@ module.exports = class Player extends Majiang.Player {
 
             if (n_xiangting > 0) {
 
-                for (let m of get_peng_mianzi(shoupai, p+'+')) {
+                for (let m of this.get_peng_mianzi(shoupai, p+'+')) {
                     let new_shoupai = shoupai.clone().fulou(m);
                     if (this.xiangting(new_shoupai) < n_xiangting) {
                         pai.push(p+'+');
@@ -300,7 +295,7 @@ module.exports = class Player extends Majiang.Player {
                 }
                 if (pai[pai.length - 1] == p+'+') continue;
 
-                for (let m of get_chi_mianzi(shoupai, p+'-')) {
+                for (let m of this.get_chi_mianzi(shoupai, p+'-')) {
                     let new_shoupai = shoupai.clone().fulou(m);
                     if (this.xiangting(new_shoupai) < n_xiangting) {
                         pai.push(p+'-');
