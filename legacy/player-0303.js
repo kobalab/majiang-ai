@@ -427,7 +427,7 @@ module.exports = class Player extends Majiang.Player {
             let ev = this.eval_shoupai(new_shoupai, paishu, back);
 
             paishu[p]++;
-            if (ev > min) rv += ev * paishu[p];
+            if (ev - min > 0.0000001) rv += ev * paishu[p];
         }
         return rv / width[n_xiangting];
     }
