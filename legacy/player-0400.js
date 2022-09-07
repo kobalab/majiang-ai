@@ -600,15 +600,10 @@ module.exports = class Player extends Majiang.Player {
 
     eval_fulou(shoupai, p, paishu, back) {
 
-        const get_peng_mianzi = (shoupai, p) =>
-                    Majiang.Game.get_peng_mianzi(this._rule, shoupai, p);
-        const get_chi_mianzi  = (shoupai, p) =>
-                    Majiang.Game.get_chi_mianzi(this._rule, shoupai, p);
-
         let n_xiangting = Majiang.Util.xiangting(shoupai);
 
         let peng_max = 0;
-        for (let m of get_peng_mianzi(shoupai, p+'+')) {
+        for (let m of this.get_peng_mianzi(shoupai, p+'+')) {
             let new_shoupai = shoupai.clone().fulou(m);
             if (Majiang.Util.xiangting(new_shoupai) >= n_xiangting) continue;
             peng_max = Math.max(this.eval_shoupai(new_shoupai, paishu, back),
@@ -616,7 +611,7 @@ module.exports = class Player extends Majiang.Player {
         }
 
         let chi_max = 0;
-        for (let m of get_chi_mianzi(shoupai, p+'-')) {
+        for (let m of this.get_chi_mianzi(shoupai, p+'-')) {
             let new_shoupai = shoupai.clone().fulou(m);
             if (Majiang.Util.xiangting(new_shoupai) >= n_xiangting) continue;
             chi_max  = Math.max(this.eval_shoupai(new_shoupai, paishu, back),
