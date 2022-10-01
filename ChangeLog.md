@@ -1,3 +1,8 @@
+### v0.6.2 / 2022-10-01
+
+  - select_daopai() が allow_no_daopai() を使用するよう変更
+  - @kobalab/majiang-core 0.2.11 → 0.3.0
+
 ### v0.6.1 / 2022-09-16
 
   - eval_backtrack() の評価値比較の際に丸め誤差の考慮が漏れていたバグを修正
