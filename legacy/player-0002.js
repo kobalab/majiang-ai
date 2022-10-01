@@ -102,7 +102,6 @@ module.exports = class Player extends Majiang.Player {
     }
 
     select_daopai() {
-        return this._model.shan.paishu == 0
-            && Majiang.Util.xiangting(this.shoupai) == 0
+        return this.allow_no_daopai(this.shoupai);
     }
 }
