@@ -143,10 +143,10 @@ if (player.shoupai.get_dapai()) {
         console.log(
             r.p,
             r.n_xiangting,
-            r.ev != null ? r.ev.toFixed(2)             : 'オリ',
-            r.weixian    ? `(${r.weixian.toFixed(2)})` : '',
-            r.ev         ? r.tingpai.join(',')         : '',
-            r.ev         ? r.n_tingpai                 : '',
+            r.ev != null      ? r.ev.toFixed(2)             : 'オリ',
+            r.weixian != null ? `(${r.weixian.toFixed(2)})` : '',
+            r.ev              ? r.tingpai.join(',')         : '',
+            r.ev              ? r.n_tingpai                 : '',
         );
     }
 }
