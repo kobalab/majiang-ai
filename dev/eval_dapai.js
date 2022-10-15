@@ -134,12 +134,17 @@ if (argv._[1]) {
 }
 
 let info = [];
+const cmp = (a, b)=> a.selected ? -1
+                   : b.selected ?  1
+                   : b.ev - a.ev;
 if (player.shoupai.get_dapai()) {
 
-    if (player.get_gang_mianzi(player.shoupai)) player.select_gang(info);
-    player.select_dapai(info);
+    let m = player.select_gang(info);
+    if (m) info.forEach(i=>{ if (i.m == m) i.selected = true });
+    let p = player.select_dapai(info);
+    if (! m) info.forEach(i=>{ if (i.p == p) i.selected = true });
 
-    for (let r of info) {
+    for (let r of info.sort(cmp)) {
         console.log(
             r.p,
             r.n_xiangting,
@@ -154,7 +159,7 @@ else if (dapai) {
 
     player.select_fulou(dapai, info);
 
-    for (let r of info) {
+    for (let r of info.sort(cmp)) {
         console.log(
             r.n_xiangting,
             r.ev.toFixed(2),
