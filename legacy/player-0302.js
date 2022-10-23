@@ -344,7 +344,7 @@ module.exports = class Player extends Majiang.Player {
 
         let paistr = shoupai.toString();
         if (rongpai)
-                paistr = paistr.replace(/^(.*?)(,.*|\*?)$/, `$1${rongpai}$2`);
+                paistr = paistr.replace(/^([^\*\,]*)(.*)$/, `$1${rongpai}$2`);
         if (this._defen_cache[paistr] != null) return this._defen_cache[paistr];
 
         let param = {
