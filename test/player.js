@@ -808,6 +808,18 @@ suite('Player', ()=>{
             assert.equal(player.get_defen(player.shoupai), 2700);
             assert.equal(player._defen_cache['m123s79z11222s8,p4-56'], 2700);
         });
+        test('親・メンゼン・ロン', ()=>{
+            const player = init_player({shoupai:'m123p456s789z1122',
+                                        baopai:'p1'});
+            assert.equal(player.get_defen(player.shoupai, 'z1-'), 7700);
+            assert.equal(player._defen_cache['m123p456s789z1122z1-'], 7700);
+        });
+        test('子・リーチ・暗槓あり・ロン', ()=>{
+            const player = init_player({shoupai:'m123s79z11222*,s2222',
+                                        baopai:'p1',menfeng:1});
+            assert.equal(player.get_defen(player.shoupai, 's8+'), 3900);
+            assert.equal(player._defen_cache['m123s79z11222s8+*,s2222'], 3900);
+        });
         test('キャッシュを使用(ロン和了)', ()=>{
             const player = init_player();
             player._defen_cache['m1112345678999m1='] = 1000;
