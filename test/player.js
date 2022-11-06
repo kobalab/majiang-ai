@@ -348,12 +348,15 @@ suite('Player', ()=>{
     suite('action_jieju(jieju)', ()=>{
         test('卓情報を設定すること', ()=>{
             const player = init_player();
-            player.action({jieju:{}});
+            const paipu = { defen: [ 10000, 20000, 30000, 40000 ] };
+            player.action({jieju:paipu});
+            assert.deepEqual(player._model.defen, paipu.defen);
             assert.ok(player._paipu);
         });
         test('応答を返すこと', ()=>{
             const player = init_player();
-            player.action({jieju:{}}, reply);
+            const paipu = { defen: [ 10000, 20000, 30000, 40000 ] };
+            player.action({jieju:paipu}, reply);
             assert.ok(_reply);
         });
     });
