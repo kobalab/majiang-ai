@@ -1,3 +1,7 @@
+### v0.6.5 / 2022-11-06
+
+  - @kobalab/majiang-core 0.4.0 → 0.5.0
+
 ### v0.6.4 / 2022-10-31
 
   - @kobalab/majiang-core 0.3.1 → 0.4.0
