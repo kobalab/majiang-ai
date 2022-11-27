@@ -85,7 +85,7 @@ const rule = hongpai == 0 ? Majiang.rule({'赤牌':{m:0,p:0,s:0}})
 player.kaiju({ id:0, rule:rule, title:'', player:[], qijia:0 });
 
 let qipai = {
-    zhuangfeng: zhuangfeng || 0,
+    zhuangfeng: +(zhuangfeng || 0),
     jushu:      [0,3,2,1][menfeng || 0],
     changbang:  0,
     lizhibang:  0,
