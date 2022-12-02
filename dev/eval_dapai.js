@@ -126,6 +126,7 @@ if (argv._[1]) {
                 player._suanpai.gang({ l: l, m: m });
             }
             player._model.lunban = l;
+            dapai = null;
         }
         else {
             l = (l + 1) % 4;
