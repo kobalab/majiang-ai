@@ -140,7 +140,8 @@ const cmp = (a, b)=> a.selected ? -1
                    : b.ev - a.ev;
 if (player.shoupai.get_dapai()) {
 
-    let m = player.select_gang(info);
+    let m;
+    if (player.shoupai.get_gang_mianzi()) m = player.select_gang(info);
     if (m) info.forEach(i=>{ if (i.m == m) i.selected = true });
     let p = player.select_dapai(info);
     if (! m) info.forEach(i=>{ if (i.p == p) i.selected = true });
