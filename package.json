@@ -25,9 +25,9 @@
   },
   "homepage": "https://github.com/kobalab/majiang-ai#readme",
   "devDependencies": {
-    "mocha": "^9.2.0",
+    "mocha": "^10.2.0",
     "nyc": "^15.1.0",
-    "yargs": "^17.2.1"
+    "yargs": "^17.7.2"
   },
   "dependencies": {
     "@kobalab/majiang-core": "^1.1.1"
