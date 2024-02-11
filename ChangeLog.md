@@ -1,3 +1,7 @@
+### v1.0.9 / 2024-02-11
+
+  - @kobalab/majiang-core 1.1.2 → 1.2.0
+
 ### v1.0.8 / 2023-12-26
 
   - @kobalab/majiang-core 1.1.1 → 1.1.2
