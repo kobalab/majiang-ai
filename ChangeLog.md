@@ -1,3 +1,8 @@
+### v1.0.10 / 2024-02-25
+
+  - String の非推奨のメソッドを変更: substr() → slice()
+  - @kobalab/majiang-core 1.2.0 → 1.2.1
+
 ### v1.0.9 / 2024-02-11
 
   - @kobalab/majiang-core 1.1.2 → 1.2.0
