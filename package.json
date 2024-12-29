@@ -1,6 +1,6 @@
 {
   "name": "@kobalab/majiang-ai",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "電脳麻将の思考ルーチン",
   "publishConfig": {
     "access": "public"
@@ -25,11 +25,11 @@
   },
   "homepage": "https://github.com/kobalab/majiang-ai#readme",
   "devDependencies": {
-    "mocha": "^10.8.2",
+    "mocha": "^11.0.1",
     "nyc": "^17.1.0",
     "yargs": "^17.7.2"
   },
   "dependencies": {
-    "@kobalab/majiang-core": "^1.3.1"
+    "@kobalab/majiang-core": "^1.3.2"
   }
 }
