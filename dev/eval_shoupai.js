@@ -26,7 +26,7 @@ function select_dapai(player, shoupai, paishu) {
             let tingpai = Majiang.Util.tingpai(new_shoupai);
             if (n_xiangting == 0) {
                 tingpai = tingpai.filter(
-                                    _=>player.get_defen(new_shoupai, _+'='));
+                            p => player.get_defen(new_shoupai.clone().zimo(p)));
             }
             rv = {
                 ev:      ev.toFixed(2),
