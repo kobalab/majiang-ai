@@ -30,7 +30,7 @@
   "homepage": "https://github.com/kobalab/majiang-ai#readme",
   "devDependencies": {
     "mocha": "^11.8.0",
-    "nyc": "^17.1.0",
+    "nyc": "^18.0.0",
     "yargs": "^17.7.2"
   },
   "nyc": {
