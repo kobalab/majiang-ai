@@ -11,7 +11,7 @@ const assert  = require('assert');
 
 function select_player() {
     const legacy = process.env.LEGACY || '';
-    return new (legacy.match(/^\d{4}$/) ? require(`../legacy/player-${legacy}`)
+    return new (legacy.match(/^\d{4}$/) ? require('../legacy/')(legacy)
                                         : require('../'))();
 }
 
