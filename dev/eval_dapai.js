@@ -46,7 +46,7 @@ const argv = yargs
 
 let legacy = argv.legacy ?? '';
 const Player = legacy.match(/^\d{4}$/)
-                        ? require(`../legacy/player-${legacy}`)
+                        ? require('../legacy/')(legacy)
                         : require('../');
 const player = new Player();
 

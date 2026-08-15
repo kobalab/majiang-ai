@@ -10,7 +10,7 @@ const Majiang = require('@kobalab/majiang-core');
 const Game    = require('./game');
 
 function select_player(n = '') {
-    return new (n.match(/^\d{4}$/) ? require(`../legacy/player-${n}`)
+    return new (n.match(/^\d{4}$/) ? require('../legacy/')(n)
                                    : require('../'))();
 }
 

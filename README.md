@@ -12,6 +12,19 @@ $ npm i @kobalab/majiang-ai
 
 [GitHubリポジトリ](https://github.com/kobalab/majiang-ai) では [AI開発のためのツール](https://github.com/kobalab/majiang-ai/tree/master/dev) や [過去のバージョンのAI](https://github.com/kobalab/majiang-ai/tree/master/legacy) も公開していますので、clone や fork してあなた自身の実装を試すことも可能です。
 
+**関連記事:** [麻雀AIの作り方](https://blog.kobalab.net/entry/2025/02/20/010020)
+
+## 使用方法
+
+最新のAIを使用する場合:
+```javascript
+const Player = require('@kobalab/majiang-ai');
+```
+過去のAIを使用する場合:
+```javascript
+const Player = require('@kobalab/majiang-ai/legacy')('0202');
+```
+
 ## ライセンス
 [MIT](https://github.com/kobalab/majiang-ai/blob/master/LICENSE)
 

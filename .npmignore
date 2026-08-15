@@ -5,7 +5,6 @@ shan
 bin
 test/
 dev/
-legacy/
 setver.sh
 test.sh
 rule.json
