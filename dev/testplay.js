@@ -42,12 +42,12 @@ for (let i = 1; i < 4; i++) {
     players[i] = select_player(argv._[0]);
 }
 
-const script = get_shan(argv.input) || [];
-for (let i = 0; i < (argv.skip || 0); i++) script.shift()
+const shan = get_shan(argv.input) || [];
+for (let i = 0; i < (argv.skip || 0); i++) shan.shift()
 
 const rule = get_rule(argv.rule);
 
-let times = argv.times || script && script.length || 1;
+let times = argv.times || shan.length || 1;
 
 const paipu = [];
 const callback = (log)=>{
@@ -59,15 +59,13 @@ const callback = (log)=>{
 console.log(`[${times}]`,new Date().toLocaleTimeString());
 
 while (times) {
-    let s = script.shift();
-    const game = s ? new Game(players, callback, rule)
-                   : new Majiang.Game(players, callback, rule);
-    game._model.title += ` #${paipu.length}`;
+    const game = new Game(players, callback, rule).preset(shan.shift());
+    game.model.title += ` #${paipu.length}`;
     for (let i = 0; i < 4; i++) {
         let legacy = argv._[i == 0 ? 1 : 0];
-        if (legacy) game._model.player[i] += ` [${legacy}]`;
+        if (legacy) game.model.player[i] += ` [${legacy}]`;
     }
-    game.do_sync(s);
+    game.do_sync();
     console.log(`[${--times}]`, new Date().toLocaleTimeString(),
                 game._paipu.rank[0], game._paipu.point[0]);
 }
