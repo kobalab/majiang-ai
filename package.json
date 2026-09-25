@@ -8,7 +8,8 @@
   "main": "lib/index.js",
   "exports": {
     ".": "./lib/index.js",
-    "./legacy": "./legacy/index.js"
+    "./legacy": "./legacy/index.js",
+    "./preset-game":"./dev/game.js"
   },
   "scripts": {
     "test": "mocha -u tdd",
