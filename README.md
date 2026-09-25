@@ -24,6 +24,11 @@ const Player = require('@kobalab/majiang-ai');
 ```javascript
 const Player = require('@kobalab/majiang-ai/legacy')('0202');
 ```
+デュプリケート対局をする場合:
+```javascript
+const Game = require('@kobalab/majiang-ai/preset-game');
+const game = new Game(player).preset(shan);
+```
 
 ## ライセンス
 [MIT](https://github.com/kobalab/majiang-ai/blob/master/LICENSE)
